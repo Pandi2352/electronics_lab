@@ -8,6 +8,7 @@ It is plain HTML, CSS and JavaScript: no build step, no framework, no server and
 
 | Tab | What it does |
 |---|---|
+| **Roadmap** | The start page: an 8-stage learning path from your first LED to IoT dashboards and robots. Each stage has milestones to tick, counts your exercise progress automatically, and links to the exercises, boards, projects and calculators it needs. |
 | **Shopping** | A master shopping list of 176 parts in 23 categories, each marked *Buy now* or *Buy later*. Tick items as you order them, search by name (`10k`, `LED`, `uf`, `ohm`) and filter by phase. |
 | **Components** | A plain-language guide to 42 components. 20 of the cards have pinout diagrams (LED, transistors, MOSFETs, 555, op-amps, logic chips, 7-segment display…). |
 | **Exercises** | 30 breadboard exercises in 7 stages, from measuring your 5V supply to a 555-driven LED chaser. Each one has its parts, steps, expected result and relevant pinouts. Mark exercises as done to track progress. |
@@ -15,14 +16,16 @@ It is plain HTML, CSS and JavaScript: no build step, no framework, no server and
 | **Sensors** | 93 sensors in 16 categories, from simple (LDR, thermistor) to advanced (BME688, GNSS). Each lists what it measures, its output type and what it is used for. Includes a recommended 28-sensor starter collection. |
 | **Outputs** | 38 outputs and drivers: LEDs, displays, sound, relays, motors, servos, steppers and motor drivers. Each lists the control signal and power it needs. Includes a recommended starter set. |
 | **Projects** | 10 guided builds (plant monitor, weather station, RC car, alarm, GPS tracker…). Each project checks your *Have it* ticks from Boards, Sensors and Outputs, and shows either **Ready to build** or exactly what is missing. |
+| **Tools** | 9 calculators: resistor colour code (both directions), Ohm's law, LED resistor, voltage divider with an ESP32/UNO ADC check, 555 timer, RC time constant, battery life, series & parallel, and capacitor codes. Inputs accept shorthand such as `4k7`, `2.2M`, `100n` and `4R7`. |
 
 Across the whole site:
 
-- **Light and dark themes.** It follows your system setting; the 🌓 button overrides it.
+- **Light and dark themes.** It follows your system setting; the half-circle button in the header overrides it.
 - **Works on phones.** On small screens the tab bar scrolls sideways.
 - **Saved progress.** Ticks and progress are stored in your browser (see [Saved data](#saved-data)).
 - **Keyboard shortcuts.** Press `/` to jump to the search box on the current tab, and `Esc` to clear it.
 - **Links survive refresh.** The URL remembers the current tab (e.g. `index.html#sensors`).
+- **Print / Save as PDF.** Print the full shopping list or only what's still to buy, all exercises or only the unfinished ones, a single exercise or project, or the roadmap. Printouts are always black-on-white, with everything expanded. Choose *Save as PDF* in the print dialog for a PDF.
 - **Theme-aware diagrams.** All pinout diagrams are inline SVG, so they switch with the light/dark theme.
 
 ## Getting started
@@ -46,7 +49,7 @@ Any static host works for publishing it: GitHub Pages, Netlify or Cloudflare Pag
 
 ```
 components/
-├── index.html          Page layout and the 7 tab views
+├── index.html          Page layout and the 9 tab views
 ├── css/
 │   └── styles.css      All styles, theme colours and the mobile layout
 └── js/
@@ -57,11 +60,13 @@ components/
     ├── boards.js       Board guide (BOARDS, BOARD_CHOICE)
     ├── outputs.js      Outputs & drivers (OUTPUT_GROUPS, OUTPUT_KIT)
     ├── projects.js     Guided projects (PROJECTS)
+    ├── roadmap.js      Learning roadmap stages and milestones (ROADMAP)
+    ├── tools.js        Calculators (TOOLS)
     ├── app.js          Shopping, Components and Exercises views; tabs; theme
-    └── guides.js       Boards, Sensors, Outputs and Projects views
+    └── guides.js       Roadmap, Boards, Sensors, Outputs, Projects and Tools views; printing
 ```
 
-The scripts are classic `<script defer>` files that share global constants, so their load order in `index.html` matters: data files first, then `app.js`, then `guides.js`.
+The scripts are classic `<script defer>` files that share global constants, so their load order in `index.html` matters: data files first (including `tools.js`), then `app.js`, then `guides.js`.
 
 ## Editing the content
 
@@ -98,13 +103,17 @@ needs:['b:esp32-devkit|esp32-c3',   // board: any one of these
 
 `b:` = board, `s:` = sensor, `o:` = output, `|` = any one of them, `?` = optional. Anything that is not tracked in a guide goes in `parts`.
 
+### Add a roadmap stage or milestone
+
+Edit `ROADMAP` in `js/roadmap.js`. `milestones` are `[id, text]` pairs; `exStages` lists the exercise stages whose progress counts towards the stage; `links` are `[type, id, label]`, where `type` is `view` (a tab), `tool` (a calculator), `board` or `project`.
+
 ### Add a pinout diagram
 
 Add an entry to `PINOUTS` in `js/pinouts.js` with a `title`, a `note` and a `draw` function that returns SVG. The `dip()`, `to92()` and `to220()` helpers cover most IC and transistor packages. Then reference its key from a card's `pins` array (Components and Exercises) or a board's `pinout` field.
 
 ### Rules for ids
 
-- **Never rename or reuse an `id`** in exercises, sensors, outputs, boards or projects. Saved progress is stored by `id`, so renaming one loses its tick.
+- **Never rename or reuse an `id`** in exercises, sensors, outputs, boards, projects or roadmap milestones. Saved progress is stored by `id`, so renaming one loses its tick.
 - The shopping list is the exception: its ticks are stored by **position** (`B-3`), so inserting or removing an item shifts the ticks after it. Add new shopping items at the **end** of a category until this is fixed (see [Roadmap](#roadmap)).
 
 ## Saved data
@@ -119,6 +128,7 @@ Everything is saved in the browser's `localStorage`, on this device only:
 | `lab-sensors` | Sensors you have |
 | `lab-outputs` | Outputs you have |
 | `lab-projects` | Projects marked built |
+| `lab-roadmap` | Roadmap milestones ticked |
 | `lab-theme` | Light/dark choice |
 
 Clearing site data, using a private window, or switching browser or device starts you with empty progress. If storage is blocked, the site still works; it just doesn't save anything.
@@ -131,7 +141,9 @@ The guides are for learning with low-voltage DC circuits. Mains voltage (230V/12
 
 - [ ] Stable ids for shopping-list items (so editing the list never moves ticks)
 - [ ] Backup and restore of all progress (export/import a file)
-- [ ] Calculators tab: resistor colour code, Ohm's law, LED resistor, voltage divider, 555 timer, battery life
+- [x] Calculators tab
+- [x] Learning roadmap
+- [x] Print / Save as PDF sheets
 - [ ] Communication tab: UART, I2C, SPI, 1-Wire, Wi-Fi, BLE, ESP-NOW, LoRa, MQTT
 - [ ] Power & batteries tab: Li-ion, chargers, buck/boost converters, deep sleep
 - [ ] Offline install (PWA) and free hosting on GitHub Pages

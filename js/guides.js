@@ -1,4 +1,4 @@
-/* Boards, Sensors, Outputs and Projects views. Uses helpers from app.js (loadJSON, persist, fold, highlight,
+/* Roadmap, Boards, Sensors, Outputs, Projects and Tools views, and printing. Uses helpers from app.js (loadJSON, persist, fold, highlight,
    setOpen, wireToggle, syncToggle, setBar, CHEVRON, CHECK, viewHooks). */
 
 const $ = id => document.getElementById(id);
@@ -321,6 +321,7 @@ PROJECTS.forEach((p, i) => {
   const num = String(i + 1).padStart(2, '0');
   const el = document.createElement('div');
   el.className = 'cat proj';
+  el.id = 'proj-' + p.id;
   el.innerHTML = `
     <button type="button" class="cathead" aria-expanded="false" aria-controls="pj-${p.id}">
       <span class="ic" aria-hidden="true">${num}</span>
@@ -338,7 +339,7 @@ PROJECTS.forEach((p, i) => {
         <div class="needs"><div class="needhead"><h5>You need</h5><span class="needcount"></span></div><ul class="needlist"></ul>
           <h5 class="otherhead">Other parts</h5><ul class="parts">${p.parts.map(x => `<li>${x}</li>`).join('')}</ul></div>
       </aside>
-      <div class="exfoot"><button type="button" class="btn builtbtn"></button></div>
+      <div class="exfoot"><button type="button" class="btn" data-print="proj-one">Print</button><button type="button" class="btn builtbtn"></button></div>
     </div></div></div>`;
   el.querySelector('.cathead').addEventListener('click', () => setOpen(el, !el.classList.contains('open')));
   el.querySelector('.builtbtn').addEventListener('click', () => {
@@ -386,3 +387,144 @@ wirePressed($('proj-ready'), on => { readyOnly = on; refreshProjects(); });
 onHaveChange.push(refreshProjects);
 viewHooks.projects = refreshProjects;
 refreshProjects();
+
+/* ============ TOOLS ============ */
+TOOLS.render($('tool-grid'), $('tool-jumps'));
+const flashTool = id => {
+  const el = $('tool-' + id);
+  el.scrollIntoView({ behavior:'smooth', block:'start' });
+  el.classList.remove('flash');
+  void el.offsetWidth;
+  el.classList.add('flash');
+};
+$('tool-jumps').addEventListener('click', e => {
+  const b = e.target.closest('[data-tool]');
+  if(b) flashTool(b.dataset.tool);
+});
+
+/* ============ ROADMAP ============ */
+const roadState = loadJSON('lab-roadmap');
+const roadList = $('road-list');
+const goView = view => { if(location.hash !== '#' + view) location.hash = view; };
+
+// Follow a roadmap link: another tab, a board, a project, a calculator or an exercise stage.
+function openTarget(type, id){
+  if(type === 'view') return goView(id);
+  if(type === 'board') return openItem('b', id);
+  goView({ tool:'tools', project:'projects', exstage:'exercises' }[type]);
+  setTimeout(() => {
+    if(type === 'tool') flashTool(id);
+    else if(type === 'project') reveal($('proj-' + id));
+    else document.querySelector(`#exlist .stage[data-stage="${id}"]`).scrollIntoView({ behavior:'smooth', block:'start' });
+  }, 60);
+}
+
+const exercisesIn = stages => EXERCISES.filter(ex => stages.includes(ex.stage));
+$('road-flow').innerHTML = flowHTML(ROADMAP.map(r => r.short));
+
+ROADMAP.forEach((r, i) => {
+  const links = [
+    ...(r.exStages || []).map(n => ['exstage', n, `Exercises — stage ${n}: ${STAGES.find(s => s.id === n).title}`]),
+    ...r.links,
+  ];
+  const el = document.createElement('div');
+  el.className = 'cat road';
+  el.id = 'road-' + r.id;
+  el.innerHTML = `
+    <button type="button" class="cathead" aria-expanded="false" aria-controls="rb-${r.id}">
+      <span class="ic" aria-hidden="true">${i + 1}</span>
+      <span class="text"><span class="title">${r.title}</span><span class="note">${r.goal}</span></span>
+      <span class="meta"><span class="tag here" hidden>You are here</span><span class="count"></span><span class="tag weeks">${r.weeks}</span></span>
+      ${CHEVRON}
+    </button>
+    <div class="catbody" id="rb-${r.id}"><div><div class="exbody">
+      <div class="exmain">
+        ${pills('You’ll learn', r.learn)}
+        <section class="exsec"><h5>Milestones</h5><ul class="milestones">${r.milestones.map(([id, text]) =>
+          `<li><label class="have ms"><input type="checkbox" data-ms="${id}" ${roadState[id] ? 'checked' : ''}><span>${text}</span></label></li>`).join('')}</ul></section>
+        ${r.exStages ? `<section class="exsec"><h5>Exercises</h5><p class="exprog"></p></section>` : ''}
+      </div>
+      <aside class="exside"><div class="needs">
+        <h5>Use these</h5>
+        <ul class="golist">${links.map(([type, id, label]) => `<li><button type="button" class="nlink" data-go="${type}:${id}">${label}</button></li>`).join('')}</ul>
+        <h5 class="otherhead">What to buy</h5><p class="buy">${r.buy}</p>
+      </div></aside>
+    </div></div></div>`;
+  el.querySelector('.cathead').addEventListener('click', () => setOpen(el, !el.classList.contains('open')));
+  roadList.appendChild(el);
+});
+wireToggle(roadList, $('road-toggle'));
+
+roadList.addEventListener('change', e => {
+  const id = e.target.dataset.ms;
+  if(!id) return;
+  if(e.target.checked) roadState[id] = true; else delete roadState[id];
+  persist('lab-roadmap', JSON.stringify(roadState));
+  refreshRoadmap();
+});
+roadList.addEventListener('click', e => {
+  const b = e.target.closest('[data-go]');
+  if(!b) return;
+  const [type, id] = b.dataset.go.split(':');
+  openTarget(type, type === 'exstage' ? +id : id);
+});
+
+function refreshRoadmap(){
+  let doneAll = 0, total = 0, current = null;
+  ROADMAP.forEach((r, i) => {
+    const el = $('road-' + r.id);
+    const ms = r.milestones.filter(([id]) => roadState[id]).length;
+    const exs = r.exStages ? exercisesIn(r.exStages) : [];
+    const exDone = exs.filter(ex => exState[ex.id]).length;
+    doneAll += ms + exDone;
+    total += r.milestones.length + exs.length;
+    const complete = ms === r.milestones.length && exDone === exs.length;
+    if(!complete && !current) current = r;
+    el.classList.toggle('done', complete);
+    el.querySelector('.ic').innerHTML = complete ? CHECK : i + 1;
+    el.querySelector('.count').textContent = `${ms + exDone}/${r.milestones.length + exs.length} done`;
+    el.querySelector('.tag.here').hidden = current !== r;
+    const prog = el.querySelector('.exprog');
+    if(prog) prog.textContent = `${exDone} of ${exs.length} exercises marked done in the Exercises tab.`;
+  });
+  setBar($('road-bar'), doneAll, total);
+  $('road-txt').textContent = `${doneAll} / ${total} steps done`;
+  $('road-now').innerHTML = current ? `Current stage: <b>${current.title}</b>` : '<b>Every stage complete — well done!</b>';
+  return current;
+}
+viewHooks.roadmap = refreshRoadmap;
+// Open the stage you are working on when the page loads.
+const currentStage = refreshRoadmap();
+if(currentStage) setOpen($('road-' + currentStage.id), true);
+
+/* ============ PRINT ============ */
+// Print (or save as PDF) a clean, light version of part of the page. The print CSS reads body[data-print].
+const PRINT_TITLES = {
+  'shop-all':'Shopping list', 'shop-todo':'Shopping list — still to buy',
+  'ex-all':'Breadboard exercises', 'ex-todo':'Breadboard exercises — still to do',
+  'roadmap':'Learning roadmap',
+};
+function printSheet(mode, target){
+  const title = PRINT_TITLES[mode] || (mode === 'ex-one' ? 'Exercise' : 'Project') + ': ' + target.querySelector('.title').textContent;
+  $('printhead').innerHTML = `<b>${title}</b><span>Electronics Beginner Lab · ${new Date().toLocaleDateString()}</span>`;
+  document.body.dataset.print = mode;
+  target?.classList.add('print-target');
+  const cleanup = () => {
+    delete document.body.dataset.print;
+    target?.classList.remove('print-target');
+    window.removeEventListener('afterprint', cleanup);
+  };
+  window.addEventListener('afterprint', cleanup);
+  window.print();
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-print]');
+  if(!b) return;
+  b.closest('details')?.removeAttribute('open');
+  const mode = b.dataset.print;
+  printSheet(mode, mode.endsWith('-one') ? b.closest('.cat') : null);
+});
+// Close an open print menu when clicking elsewhere.
+document.addEventListener('click', e => {
+  document.querySelectorAll('details.menu[open]').forEach(d => { if(!d.contains(e.target)) d.removeAttribute('open'); });
+});

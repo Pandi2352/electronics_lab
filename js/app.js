@@ -63,6 +63,7 @@ function updateProgress(){
     const count = document.getElementById('count-' + c.id);
     count.textContent = catDone + '/' + c.items.length;
     count.classList.toggle('full', catDone === c.items.length);
+    count.closest('.cat').classList.toggle('complete', catDone === c.items.length);   // skipped when printing "still to buy"
   });
   document.getElementById('progtxt').textContent = done + ' / ' + total + ' checked';
   setBar(document.getElementById('progbar'), done, total);
@@ -291,6 +292,7 @@ STAGES.forEach(stage => {
     const num = String(++exNum).padStart(2, '0');
     const el = document.createElement('div');
     el.className = 'cat ex';
+    el.id = 'exercise-' + ex.id;
     el.innerHTML = `
       <button type="button" class="cathead" aria-expanded="false" aria-controls="ex-${ex.id}">
         <span class="ic" aria-hidden="true">${num}</span>
@@ -305,7 +307,7 @@ STAGES.forEach(stage => {
           <section class="exsec callout"><h5>What you should see</h5><p>${ex.expect}</p></section>
           <section class="exsec"><h5>Why it matters</h5><p>${ex.why}</p></section>
         </div>
-        <div class="exfoot"><button type="button" class="btn donebtn"></button></div>
+        <div class="exfoot"><button type="button" class="btn" data-print="ex-one">Print</button><button type="button" class="btn donebtn"></button></div>
       </div></div></div>`;
 
     const pins = PD.block(ex.pins);
