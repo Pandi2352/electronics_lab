@@ -12,7 +12,7 @@ const ROADMAP = [
     ['m-multimeter', 'Measure voltage, current and resistance with the multimeter'],
     ['m-led-calc', 'Work out an LED resistor by hand, then check it with the calculator'],
   ],
-  exStages:[1],
+  exStages:[1, 8],
   links:[['view', 'shop', 'Shopping list'], ['tool', 'led', 'LED resistor calculator'], ['tool', 'color', 'Resistor colour code']] },
 
 { id:'logic', short:'Logic & capacitors', title:'Switches, logic, diodes & capacitors', weeks:'2 weeks',
@@ -36,7 +36,7 @@ const ROADMAP = [
     ['m-555', 'Build a 555 blinker and predict its frequency with the calculator'],
     ['m-chaser', 'Build the CD4017 LED chaser'],
   ],
-  exStages:[4, 5, 6, 7],
+  exStages:[4, 5, 6, 7, 9, 10, 11],
   links:[['tool', '555', '555 timer calculator'], ['view', 'sensors', 'Sensor guide — basic sensors']] },
 
 { id:'arduino', short:'Arduino', title:'Arduino basics', weeks:'3 weeks',

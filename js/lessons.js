@@ -8,6 +8,10 @@ const LESSON_UNITS = [
   { id:4, title:'Sound & motion' },
   { id:5, title:'Modules & chips' },
   { id:6, title:'Writing better code' },
+  { id:7, title:'Practice: LEDs & buttons' },
+  { id:8, title:'Practice: analog & sensors' },
+  { id:9, title:'Practice: sound & motion' },
+  { id:10, title:'Practice: displays & logic' },
 ];
 
 const LESSONS = [
@@ -555,5 +559,711 @@ void loop() {
   expect:'Cars have green until you press the button. Then yellow, red with the walk light on for 5 seconds, the walk light flashing for 2 seconds, and back to green.',
   how:'The system is always in exactly one named state. Each state sets its outputs and checks the one condition that moves it on. Adding a feature means adding a state or a transition, not untangling nested if statements — the same pattern runs alarms, menus and robots.',
   tryThis:['Beep the buzzer during WALKING, faster during WALK_ENDING.', 'Add a NIGHT state where the yellow light flashes on its own.'],
+  pins:['uno', 'button'] },
+/* ---------- Unit 7: practice ---------- */
+{ id:'sos', unit:7, title:'SOS in Morse code', goal:'Use functions and loops to blink a pattern.',
+  parts:['Arduino UNO'],
+  wiring:['No wiring — uses the on-board LED.'],
+  code:`// Blink SOS in Morse code on the on-board LED:  ... --- ...
+const int LED = LED_BUILTIN;
+const int UNIT = 200;              // length of one dot in ms
+
+void flash(int units) {           // a dot (1 unit) or a dash (3 units)
+  digitalWrite(LED, HIGH);
+  delay(units * UNIT);
+  digitalWrite(LED, LOW);
+  delay(UNIT);                     // gap inside a letter
+}
+
+void letter(int count, int units) {
+  for (int i = 0; i < count; i++) flash(units);
+  delay(2 * UNIT);                 // gap between letters (3 units in total)
+}
+
+void setup() {
+  pinMode(LED, OUTPUT);
+}
+
+void loop() {
+  letter(3, 1);                    // S
+  letter(3, 3);                    // O
+  letter(3, 1);                    // S
+  delay(4 * UNIT);                 // gap between words (7 units in total)
+}`,
+  expect:'Three short, three long, three short flashes, a pause, then again.',
+  how:'Morse timing is all in units: dot 1, dash 3, gap in a letter 1, between letters 3, between words 7. Two small functions build the whole pattern.',
+  tryThis:['Change UNIT to speed it up or slow it down.', 'Blink your name in Morse code.'],
+  pins:['uno'] },
+
+{ id:'chaser', unit:7, title:'LED chaser', goal:'Drive six LEDs from an array.',
+  redo:'4017-chaser',
+  parts:['Arduino UNO', '5mm LEDs ×6', '220Ω resistors ×6'],
+  wiring:['Pins 3, 4, 5, 6, 7 and 8 → 220Ω → LED → GND, in a row on the breadboard.'],
+  code:`// LED chaser: a light runs back and forth along six LEDs on pins 3–8.
+const int PINS[] = {3, 4, 5, 6, 7, 8};
+const int COUNT = 6;
+const int SPEED = 80;              // ms per step
+
+void setup() {
+  for (int i = 0; i < COUNT; i++) pinMode(PINS[i], OUTPUT);
+}
+
+void step(int i) {
+  digitalWrite(PINS[i], HIGH);
+  delay(SPEED);
+  digitalWrite(PINS[i], LOW);
+}
+
+void loop() {
+  for (int i = 0; i < COUNT; i++) step(i);            // forwards
+  for (int i = COUNT - 2; i > 0; i--) step(i);        // back, without repeating the ends
+}`,
+  expect:'A single light sweeps left and right along the row, like the CD4017 chaser but bouncing.',
+  how:'An array holds the pin numbers, so one loop drives every LED. Counting down from COUNT − 2 to 1 skips the end LEDs, which would otherwise light twice in a row.',
+  tryThis:['Let the pot on A0 set SPEED.', 'Light two LEDs at once, moving in opposite directions.'],
+  pins:['uno'] },
+
+{ id:'press-counter', unit:7, title:'Button press counter', goal:'Detect each new press and count it.',
+  parts:['Arduino UNO', '6×6mm tactile push button'],
+  wiring:['Button between pin 2 and GND.'],
+  code:`// Count button presses and print the total. Button between pin 2 and GND.
+const int BUTTON = 2;
+int count = 0;
+int lastState = HIGH;
+
+void setup() {
+  pinMode(BUTTON, INPUT_PULLUP);
+  Serial.begin(9600);
+  Serial.println("Press the button...");
+}
+
+void loop() {
+  int state = digitalRead(BUTTON);
+  if (state != lastState) {          // the button changed
+    if (state == LOW) {              // ...and it is now pressed
+      count++;
+      Serial.print("Presses: ");
+      Serial.println(count);
+    }
+    delay(20);                       // ignore contact bounce
+  }
+  lastState = state;
+}`,
+  expect:'The Serial Monitor prints Presses: 1, 2, 3… — one number per press, however long you hold it.',
+  how:'Comparing with the previous reading finds the moment of change (an edge), so holding the button counts once. The short delay after any change skips the bounce.',
+  tryThis:['Reset the count to 0 after 10 presses.', 'Print how long each press lasted.'],
+  pins:['uno', 'button'] },
+
+{ id:'reaction', unit:7, title:'Reaction timer game', goal:'Measure how fast you react, in milliseconds.',
+  parts:['Arduino UNO', 'Red 5mm LED', '220Ω resistor', '6×6mm tactile push button'],
+  wiring:['Pin 9 → 220Ω → LED → GND.', 'Button between pin 2 and GND.'],
+  code:`// Reaction timer: wait for the LED, then press the button as fast as you can.
+const int LED = 9;
+const int BUTTON = 2;
+
+void waitForRelease() {
+  while (digitalRead(BUTTON) == LOW) {}
+  delay(50);
+}
+
+void setup() {
+  pinMode(LED, OUTPUT);
+  pinMode(BUTTON, INPUT_PULLUP);
+  Serial.begin(9600);
+  randomSeed(analogRead(A5));          // an unconnected pin gives random noise
+}
+
+void loop() {
+  Serial.println("Get ready...");
+  unsigned long wait = random(2000, 5000);   // 2 to 5 seconds
+  unsigned long start = millis();
+  while (millis() - start < wait) {
+    if (digitalRead(BUTTON) == LOW) {        // pressed before the LED
+      Serial.println("Too soon! Try again.");
+      waitForRelease();
+      delay(1000);
+      return;                                // start loop() again
+    }
+  }
+  digitalWrite(LED, HIGH);
+  unsigned long lit = millis();
+  while (digitalRead(BUTTON) == HIGH) {}     // wait for the press
+  unsigned long reaction = millis() - lit;
+  digitalWrite(LED, LOW);
+  Serial.print("Reaction time: ");
+  Serial.print(reaction);
+  Serial.println(" ms");
+  waitForRelease();
+  delay(2000);
+}`,
+  expect:'After a random wait the LED lights; press and your time appears — most people score 200–300ms. Pressing early prints “Too soon!”.',
+  how:'random() picks the wait so you cannot predict it; randomSeed() from a floating analog pin makes the sequence different each time. millis() before and after gives the reaction time.',
+  tryThis:['Keep and print your best time.', 'Make it a two-player game with a second button.'],
+  pins:['uno'] },
+
+{ id:'binary-counter', unit:7, title:'Binary counter on four LEDs', goal:'Show a number in binary with bit operations.',
+  redo:'dip-binary',
+  parts:['Arduino UNO', '5mm LEDs ×4', '220Ω resistors ×4', '6×6mm tactile push button'],
+  wiring:['Pins 8, 9, 10, 11 → 220Ω → LED → GND. Put pin 11 on the left (8s) and pin 8 on the right (1s).', 'Button between pin 2 and GND.'],
+  code:`// Binary counter: each press adds 1, shown on four LEDs (pins 8–11).
+const int LEDS[] = {8, 9, 10, 11};     // bit 0 (value 1) to bit 3 (value 8)
+const int BUTTON = 2;
+int value = 0;
+int lastState = HIGH;
+
+void show(int n) {
+  for (int bit = 0; bit < 4; bit++) {
+    digitalWrite(LEDS[bit], (n >> bit) & 1);   // is this bit set?
+  }
+}
+
+void setup() {
+  for (int i = 0; i < 4; i++) pinMode(LEDS[i], OUTPUT);
+  pinMode(BUTTON, INPUT_PULLUP);
+  show(0);
+}
+
+void loop() {
+  int state = digitalRead(BUTTON);
+  if (state != lastState) {
+    if (state == LOW) {
+      value = (value + 1) % 16;          // 0–15, then back to 0
+      show(value);
+    }
+    delay(20);
+  }
+  lastState = state;
+}`,
+  expect:'Each press counts up in binary: 0001, 0010, 0011… up to 1111 (15), then back to 0000.',
+  how:'n >> bit shifts the wanted bit into position 0, and & 1 keeps only that bit — so each LED shows one bit of the number. % 16 wraps the count after 15.',
+  tryThis:['Add a second button that counts down.', 'Count automatically every half second.'],
+  pins:['uno'] },
+
+/* ---------- Unit 8: practice ---------- */
+{ id:'bar-graph', unit:8, title:'Potentiometer bar graph', goal:'Turn an analog reading into a row of LEDs.',
+  parts:['Arduino UNO', '5mm LEDs ×5', '220Ω resistors ×5', '10kΩ potentiometer'],
+  wiring:['Pins 3–7 → 220Ω → LED → GND.', 'Pot outer pins → 5V and GND, wiper → A0.'],
+  code:`// Bar graph: five LEDs on pins 3–7 show the pot position.
+const int LEDS[] = {3, 4, 5, 6, 7};
+const int COUNT = 5;
+const int POT = A0;
+
+void setup() {
+  for (int i = 0; i < COUNT; i++) pinMode(LEDS[i], OUTPUT);
+}
+
+void loop() {
+  int lit = map(analogRead(POT), 0, 1023, 0, COUNT);   // how many LEDs to light
+  for (int i = 0; i < COUNT; i++) {
+    digitalWrite(LEDS[i], i < lit ? HIGH : LOW);
+  }
+  delay(20);
+}`,
+  expect:'Turning the pot fills the bar from none to all five LEDs, like a volume meter.',
+  how:'map() turns 0–1023 into 0–5, and every LED whose position is below that number lights up.',
+  tryThis:['Make the last LED blink when the bar is full.', 'Swap the pot for the LDR divider to make a light meter.'],
+  pins:['uno', 'pot'] },
+
+{ id:'light-meter', unit:8, title:'Light meter in the Serial Monitor', goal:'Show a sensor as a percentage and a text bar.',
+  parts:['Arduino UNO', 'LDR (light-dependent resistor)', '10kΩ resistor'],
+  wiring:['5V → LDR → A0 → 10kΩ → GND.'],
+  code:`// Light meter: the light level as a percentage and a bar of # characters.
+const int LDR = A0;       // 5V -> LDR -> A0 -> 10k -> GND
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int percent = map(analogRead(LDR), 0, 1023, 0, 100);
+  Serial.print(percent);
+  Serial.print("% ");
+  for (int i = 0; i < percent / 5; i++) Serial.print('#');   // one # per 5%
+  Serial.println();
+  delay(250);
+}`,
+  expect:'Lines like “63% ############” that grow when you shine a torch and shrink when you cover the LDR.',
+  how:'Printing a variable number of characters is a quick way to draw a bar in plain text. Integer division (percent / 5) gives up to 20 characters.',
+  tryThis:['Remember the brightest and darkest readings and rescale between them.', 'Print a warning when it gets too dark.'],
+  pins:['uno'] },
+
+{ id:'rgb-rainbow', unit:8, title:'RGB rainbow', goal:'Blend colours smoothly with three PWM channels.',
+  redo:'rgb-mix',
+  parts:['Arduino UNO', 'RGB LED — common cathode', '220Ω resistors ×3'],
+  wiring:['Longest leg (common) → GND.', 'Red, green and blue legs → 220Ω each → pins 9, 10 and 11.'],
+  code:`// RGB rainbow: cycle a common-cathode RGB LED through every colour.
+const int RED = 9, GREEN = 10, BLUE = 11;    // PWM pins
+
+void setColor(int r, int g, int b) {
+  analogWrite(RED, r);
+  analogWrite(GREEN, g);
+  analogWrite(BLUE, b);
+}
+
+void setup() {
+  pinMode(RED, OUTPUT);
+  pinMode(GREEN, OUTPUT);
+  pinMode(BLUE, OUTPUT);
+}
+
+void loop() {
+  for (int i = 0; i < 255; i++) { setColor(255 - i, i, 0); delay(10); }   // red to green
+  for (int i = 0; i < 255; i++) { setColor(0, 255 - i, i); delay(10); }   // green to blue
+  for (int i = 0; i < 255; i++) { setColor(i, 0, 255 - i); delay(10); }   // blue to red
+}`,
+  expect:'The LED glides red → yellow → green → cyan → blue → magenta → red, about 8 seconds per cycle.',
+  how:'Fading one channel down while the next fades up passes through every mixed colour in between. For a common-anode LED, connect the common leg to 5V and use 255 − value.',
+  tryThis:['Set the colour from the Serial Monitor, e.g. “255,0,128”.', 'Make the speed follow the pot.'],
+  pins:['uno', 'rgb'] },
+
+{ id:'thermostat', unit:8, title:'Thermostat with hysteresis', goal:'Switch an output on temperature, without chattering.',
+  redo:'heat-alarm',
+  parts:['Arduino UNO', 'NTC 10k thermistor', '10kΩ resistor', 'Red 5mm LED', '220Ω resistor'],
+  wiring:['5V → 10kΩ → A0 → thermistor → GND.', 'Pin 9 → 220Ω → LED (standing in for a fan) → GND.'],
+  code:`// Thermostat: a "fan" LED turns on above 28 °C and off again below 27 °C.
+const int SENSOR = A0;     // 5V -> 10k -> A0 -> NTC -> GND
+const int FAN = 9;
+const float ON_AT = 28.0;
+const float OFF_AT = 27.0;
+bool fanOn = false;
+
+float readCelsius() {
+  int raw = analogRead(SENSOR);
+  float r = 10000.0 * raw / (1023.0 - raw);                          // thermistor resistance
+  float kelvin = 1.0 / (1.0 / 298.15 + log(r / 10000.0) / 3950.0);   // Beta equation
+  return kelvin - 273.15;
+}
+
+void setup() {
+  pinMode(FAN, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  float t = readCelsius();
+  if (!fanOn && t > ON_AT) fanOn = true;
+  if (fanOn && t < OFF_AT) fanOn = false;
+  digitalWrite(FAN, fanOn);
+  Serial.print(t, 1);
+  Serial.println(fanOn ? " C  fan ON" : " C  fan off");
+  delay(500);
+}`,
+  expect:'Warming the thermistor above 28°C turns the LED on; it stays on until the reading drops below 27°C.',
+  how:'Two thresholds with a gap between them (hysteresis) stop the output flicking on and off when the temperature hovers near one value — exactly how home thermostats behave.',
+  tryThis:['Set ON_AT and OFF_AT from the Serial Monitor.', 'Drive a real fan through the MOSFET circuit instead of the LED.'],
+  pins:['uno'] },
+
+{ id:'plotter', unit:8, title:'Graph two sensors in the Serial Plotter', goal:'See live data as a graph.',
+  parts:['Arduino UNO', '10kΩ potentiometer', 'LDR (light-dependent resistor)', '10kΩ resistor'],
+  wiring:['Pot wiper → A0 (outer pins to 5V and GND).', '5V → LDR → A1 → 10kΩ → GND.', 'After uploading, open Tools → Serial Plotter at 9600 baud.'],
+  code:`// Serial Plotter: graph the pot and the LDR at the same time.
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  Serial.print("pot:");
+  Serial.print(analogRead(A0));
+  Serial.print(",light:");
+  Serial.println(analogRead(A1));
+  delay(50);
+}`,
+  expect:'Two coloured lines, labelled pot and light, that move as you turn the knob and cover the LDR.',
+  how:'The Serial Plotter draws every line of numbers it receives. Label:value pairs separated by commas become separate named traces.',
+  tryThis:['Add a third line: the average of the last 10 light readings.', 'Watch the LDR’s response under a flickering mains lamp.'],
+  pins:['uno', 'pot'] },
+
+/* ---------- Unit 9: practice ---------- */
+{ id:'theremin', unit:9, title:'Light theremin', goal:'Play notes by waving your hand over a light sensor.',
+  parts:['Arduino UNO', 'LDR (light-dependent resistor)', '10kΩ resistor', 'Passive piezo buzzer'],
+  wiring:['5V → LDR → A0 → 10kΩ → GND.', 'Pin 8 → buzzer + ; buzzer − → GND.'],
+  code:`// Light theremin: wave your hand over the LDR to change the pitch.
+const int LDR = A0;          // 5V -> LDR -> A0 -> 10k -> GND
+const int BUZZER = 8;        // passive buzzer
+int darkest = 1023, brightest = 0;
+
+void setup() {
+  // Calibrate for 5 s while the L LED is on: move your hand over the LDR.
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
+  unsigned long start = millis();
+  while (millis() - start < 5000) {
+    int v = analogRead(LDR);
+    if (v < darkest) darkest = v;
+    if (v > brightest) brightest = v;
+  }
+  if (brightest <= darkest) brightest = darkest + 1;   // avoid dividing by zero
+  digitalWrite(LED_BUILTIN, LOW);
+}
+
+void loop() {
+  int v = constrain(analogRead(LDR), darkest, brightest);
+  int pitch = map(v, darkest, brightest, 200, 2000);
+  tone(BUZZER, pitch, 20);
+  delay(10);
+}`,
+  expect:'After the 5-second calibration, the pitch rises as more light reaches the LDR and falls as your hand covers it.',
+  how:'Calibration records the real range of readings in your room, so map() uses the whole 200–2000Hz range. constrain() keeps readings inside that range.',
+  tryThis:['Snap the pitch to the notes of a scale.', 'Add a button that silences it.'],
+  pins:['uno'] },
+
+{ id:'siren', unit:9, title:'Two-tone siren', goal:'Toggle a siren with a button while it keeps running.',
+  parts:['Arduino UNO', 'Passive piezo buzzer', '6×6mm tactile push button'],
+  wiring:['Pin 8 → buzzer + ; buzzer − → GND.', 'Button between pin 2 and GND.'],
+  code:`// Siren: press the button to start or stop a two-tone siren. Uses millis(), not delay().
+const int BUZZER = 8, BUTTON = 2;
+bool on = false;
+bool highTone = false;
+int lastState = HIGH;
+unsigned long lastSwitch = 0;
+
+void setup() {
+  pinMode(BUTTON, INPUT_PULLUP);
+}
+
+void loop() {
+  int state = digitalRead(BUTTON);
+  if (state != lastState) {
+    if (state == LOW) {
+      on = !on;
+      if (!on) noTone(BUZZER);
+    }
+    delay(20);
+  }
+  lastState = state;
+
+  if (on && millis() - lastSwitch >= 400) {   // swap tones every 0.4 s
+    lastSwitch = millis();
+    highTone = !highTone;
+    tone(BUZZER, highTone ? 960 : 770);
+  }
+}`,
+  expect:'One press starts a “nee-naw” siren, the next press stops it — and the button always responds instantly.',
+  how:'tone() without a duration keeps playing until changed, so the sketch only switches the frequency every 400ms. Because nothing waits with delay(), the button is checked continuously.',
+  tryThis:['Make a rising and falling “wail” instead of two tones.', 'Flash an LED in time with the siren.'],
+  pins:['uno'] },
+
+{ id:'servo-sweep', unit:9, title:'Servo sweep with speed control', goal:'Move a servo smoothly with a speed you can adjust.',
+  parts:['Arduino UNO', 'SG90 micro servo', '10kΩ potentiometer'],
+  wiring:['Servo brown → GND, red → 5V, orange → pin 9.', 'Pot wiper → A0 (outer pins to 5V and GND).'],
+  code:`// Servo sweep: the arm swings back and forth; the pot sets the speed.
+#include <Servo.h>
+
+Servo servo;
+const int POT = A0;
+
+void sweepTo(int from, int to) {
+  int step = from < to ? 1 : -1;
+  for (int angle = from; angle != to; angle += step) {
+    servo.write(angle);
+    delay(map(analogRead(POT), 0, 1023, 2, 30));   // ms per degree
+  }
+}
+
+void setup() {
+  servo.attach(9);
+}
+
+void loop() {
+  sweepTo(0, 180);
+  sweepTo(180, 0);
+}`,
+  expect:'The arm sweeps smoothly from one end to the other and back; turning the pot changes the speed while it moves.',
+  how:'Moving one degree at a time with a short pause gives smooth motion. The pot is read inside the loop, so the speed changes immediately.',
+  tryThis:['Pause for a second at each end.', 'Sweep only between angles set by two pots.'],
+  pins:['uno', 'pot'] },
+
+{ id:'servo-gauge', unit:9, title:'Servo light gauge', goal:'Use a servo as an analog meter needle.',
+  parts:['Arduino UNO', 'SG90 micro servo', 'LDR (light-dependent resistor)', '10kΩ resistor', 'Card for a dial'],
+  wiring:['Servo brown → GND, red → 5V, orange → pin 9.', '5V → LDR → A0 → 10kΩ → GND.', 'Tape a card pointer to the servo horn and draw a scale behind it.'],
+  code:`// Light gauge: a servo needle points to the light level (dark = 0°, bright = 180°).
+#include <Servo.h>
+
+Servo needle;
+const int LDR = A0;       // 5V -> LDR -> A0 -> 10k -> GND
+float smooth = 0;
+
+void setup() {
+  needle.attach(9);
+}
+
+void loop() {
+  smooth = smooth * 0.9 + analogRead(LDR) * 0.1;    // average out flicker
+  needle.write(map((int)smooth, 0, 1023, 0, 180));
+  delay(20);
+}`,
+  expect:'The needle swings towards 180° in bright light and back towards 0° in the dark, moving smoothly rather than twitching.',
+  how:'smooth keeps 90% of the old value and adds 10% of the new reading — a simple low-pass filter that removes jitter.',
+  tryThis:['Change 0.9 / 0.1 to 0.98 / 0.02 for a slower, calmer needle.', 'Show temperature instead, using the thermometer code.'],
+  pins:['uno'] },
+
+{ id:'motor-soft', unit:9, title:'Motor with soft start and stop', goal:'Ramp a motor up and down with one button.',
+  parts:['Arduino UNO', 'The MOSFET motor circuit from the “Motor speed with a MOSFET” lesson', '6×6mm tactile push button'],
+  wiring:['Build the MOSFET motor circuit (gate from pin 5).', 'Button between pin 2 and GND.'],
+  code:`// Motor with soft start and stop: each press ramps the motor up or down.
+const int MOTOR = 5, BUTTON = 2;
+bool running = false;
+
+void ramp(int from, int to) {
+  int step = from < to ? 1 : -1;
+  for (int s = from; s != to + step; s += step) {
+    analogWrite(MOTOR, s);
+    delay(8);                      // about 2 s over the full range
+  }
+}
+
+void setup() {
+  pinMode(MOTOR, OUTPUT);
+  pinMode(BUTTON, INPUT_PULLUP);
+}
+
+void loop() {
+  if (digitalRead(BUTTON) == LOW) {
+    running = !running;
+    if (running) ramp(0, 255);
+    else ramp(255, 0);
+    while (digitalRead(BUTTON) == LOW) {}    // wait for release
+    delay(50);
+  }
+}`,
+  expect:'Press once: the motor speeds up smoothly over about 2 seconds. Press again: it slows smoothly to a stop.',
+  how:'Starting a motor at full power draws a big current surge and jerks the mechanism. Ramping the PWM value spreads the start over time — the same idea as an e-bike or fan controller.',
+  tryThis:['Make the ramp time adjustable with the pot.', 'Add a second button for an emergency stop that skips the ramp.'],
+  pins:['irlz44n', 'uno'] },
+
+/* ---------- Unit 10: practice ---------- */
+{ id:'seven-seg', unit:10, title:'Count 0–9 on a 7-segment display', goal:'Drive a raw display from a lookup table.',
+  redo:'7-segment',
+  parts:['Arduino UNO', '7-segment display — common cathode', '220Ω resistors ×7'],
+  wiring:['Both COM pins → GND.', 'Segments a, b, c, d, e, f, g → 220Ω each → pins 2, 3, 4, 5, 6, 7, 8.'],
+  code:`// Count 0–9 on a common-cathode 7-segment display. Segments a–g on pins 2–8.
+const int SEG[] = {2, 3, 4, 5, 6, 7, 8};    // a, b, c, d, e, f, g
+
+// Lit segments for each digit, as bits: g f e d c b a
+const byte DIGITS[] = {
+  0b0111111,  // 0
+  0b0000110,  // 1
+  0b1011011,  // 2
+  0b1001111,  // 3
+  0b1100110,  // 4
+  0b1101101,  // 5
+  0b1111101,  // 6
+  0b0000111,  // 7
+  0b1111111,  // 8
+  0b1101111,  // 9
+};
+
+void showDigit(int d) {
+  for (int s = 0; s < 7; s++) {
+    digitalWrite(SEG[s], (DIGITS[d] >> s) & 1);
+  }
+}
+
+void setup() {
+  for (int s = 0; s < 7; s++) pinMode(SEG[s], OUTPUT);
+}
+
+void loop() {
+  for (int d = 0; d <= 9; d++) {
+    showDigit(d);
+    delay(700);
+  }
+}`,
+  expect:'The display counts 0, 1, 2 … 9 and starts again.',
+  how:'Each digit is stored as one byte where every bit is a segment. This lookup table is exactly what the DIP switches did by hand in exercise 30.',
+  tryThis:['Count down instead.', 'Show the pot position as 0–9.', 'Add hexadecimal A–F to the table.'],
+  pins:['seg7', 'uno'] },
+
+{ id:'dice-7seg', unit:10, title:'Electronic dice on the display', goal:'Roll a random number with a little animation.',
+  redo:'dice-555',
+  parts:['Arduino UNO', 'The 7-segment display circuit from the previous exercise', '6×6mm tactile push button'],
+  wiring:['Keep the display on pins 2–8.', 'Button between pin 10 and GND.'],
+  code:`// Electronic dice: press the button to roll; the display shows 1–6.
+const int SEG[] = {2, 3, 4, 5, 6, 7, 8};
+const byte DIGITS[] = {0b0111111, 0b0000110, 0b1011011, 0b1001111, 0b1100110, 0b1101101, 0b1111101};
+const int BUTTON = 10;
+
+void showDigit(int d) {
+  for (int s = 0; s < 7; s++) digitalWrite(SEG[s], (DIGITS[d] >> s) & 1);
+}
+
+void setup() {
+  for (int s = 0; s < 7; s++) pinMode(SEG[s], OUTPUT);
+  pinMode(BUTTON, INPUT_PULLUP);
+  randomSeed(analogRead(A5));
+  showDigit(0);
+}
+
+void loop() {
+  if (digitalRead(BUTTON) == LOW) {
+    for (int i = 0; i < 15; i++) {         // a "rolling" animation that slows down
+      showDigit(random(1, 7));
+      delay(40 + i * 10);
+    }
+    showDigit(random(1, 7));               // the result, 1 to 6
+    while (digitalRead(BUTTON) == LOW) {}
+    delay(50);
+  }
+}`,
+  expect:'Each press shows numbers flickering and slowing down, then settles on a result from 1 to 6.',
+  how:'random(1, 7) returns 1 to 6 — the upper limit is not included. The slowing animation is just a growing delay.',
+  tryThis:['Count how often each number comes up over 60 rolls.', 'Roll two dice, one after the other.'],
+  pins:['seg7', 'uno'] },
+
+{ id:'lcd-thermo', unit:10, title:'LCD thermometer with min and max', goal:'Combine a sensor, a calculation and a display.',
+  parts:['Arduino UNO', 'LCD1602 with I2C backpack', 'NTC 10k thermistor', '10kΩ resistor'],
+  wiring:['LCD: VCC → 5V, GND → GND, SDA → A4, SCL → A5.', '5V → 10kΩ → A0 → thermistor → GND.'],
+  code:`// LCD thermometer: the temperature from the NTC, plus the lowest and highest seen.
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);    // your address from the I2C scanner
+const int SENSOR = A0;                 // 5V -> 10k -> A0 -> NTC -> GND
+float lowest = 999, highest = -999;
+
+float readCelsius() {
+  int raw = analogRead(SENSOR);
+  float r = 10000.0 * raw / (1023.0 - raw);
+  return 1.0 / (1.0 / 298.15 + log(r / 10000.0) / 3950.0) - 273.15;
+}
+
+void setup() {
+  lcd.init();
+  lcd.backlight();
+}
+
+void loop() {
+  float t = readCelsius();
+  if (t < lowest) lowest = t;
+  if (t > highest) highest = t;
+
+  lcd.setCursor(0, 0);
+  lcd.print("Temp: ");
+  lcd.print(t, 1);
+  lcd.print((char)223);               // the degree sign on this LCD
+  lcd.print("C   ");
+  lcd.setCursor(0, 1);
+  lcd.print("Lo ");
+  lcd.print(lowest, 1);
+  lcd.print(" Hi ");
+  lcd.print(highest, 1);
+  lcd.print("  ");
+  delay(1000);
+}`,
+  expect:'Line 1 shows the temperature, e.g. “Temp: 26.4°C”. Line 2 keeps the lowest and highest values since power-up.',
+  how:'Tracking a minimum and maximum just means comparing each new reading with the stored values. Character 223 is the degree symbol in the LCD’s built-in font.',
+  tryThis:['Add a button that resets Lo and Hi.', 'Show °F on a second screen when the button is held.'],
+  pins:['uno'] },
+
+{ id:'stopwatch', unit:10, title:'Stopwatch on the LCD', goal:'Time events to a tenth of a second with start, stop and reset.',
+  parts:['Arduino UNO', 'LCD1602 with I2C backpack', '6×6mm tactile push buttons ×2'],
+  wiring:['LCD: VCC → 5V, GND → GND, SDA → A4, SCL → A5.', 'Start/stop button between pin 2 and GND. Reset button between pin 3 and GND.'],
+  code:`// Stopwatch: button 1 starts and stops, button 2 resets (while stopped).
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+const int START_STOP = 2, RESET_BTN = 3;
+bool running = false;
+unsigned long startedAt = 0;      // millis() when the current run started
+unsigned long banked = 0;         // time from earlier runs
+int lastState = HIGH;
+
+void setup() {
+  pinMode(START_STOP, INPUT_PULLUP);
+  pinMode(RESET_BTN, INPUT_PULLUP);
+  lcd.init();
+  lcd.backlight();
+  lcd.print("Stopwatch");
+}
+
+void loop() {
+  int s = digitalRead(START_STOP);
+  if (s != lastState) {
+    if (s == LOW) {
+      if (running) banked += millis() - startedAt;   // stop: keep the time
+      else startedAt = millis();                     // start
+      running = !running;
+    }
+    delay(20);
+  }
+  lastState = s;
+
+  if (!running && digitalRead(RESET_BTN) == LOW) banked = 0;
+
+  unsigned long total = banked + (running ? millis() - startedAt : 0);
+  unsigned long tenths = total / 100;
+  int minutes = tenths / 600;
+  int seconds = (tenths / 10) % 60;
+
+  lcd.setCursor(0, 1);
+  if (minutes < 10) lcd.print('0');
+  lcd.print(minutes);
+  lcd.print(':');
+  if (seconds < 10) lcd.print('0');
+  lcd.print(seconds);
+  lcd.print('.');
+  lcd.print(tenths % 10);
+  lcd.print(running ? "  run " : "  stop");
+}`,
+  expect:'The second line shows mm:ss.t. Start, stop and restart continue from the same time; reset returns it to 00:00.0.',
+  how:'Time is kept as “banked” time from earlier runs plus the current run, so stopping and restarting never loses time. Integer division and % split milliseconds into minutes, seconds and tenths.',
+  tryThis:['Add a lap button that freezes the display while the timer keeps running.', 'Beep at every full minute.'],
+  pins:['uno'] },
+
+{ id:'combo-lock', unit:10, title:'Button combination lock', goal:'Check a sequence of inputs against a secret code.',
+  parts:['Arduino UNO', '6×6mm tactile push buttons ×3', 'Green and red 5mm LEDs', '220Ω resistors ×2'],
+  wiring:['Buttons 1, 2, 3 between pins 2, 3, 4 and GND.', 'Pin 9 → 220Ω → green LED → GND. Pin 10 → 220Ω → red LED → GND.'],
+  code:`// Combination lock: press the buttons in the right order (1, 3, 2) to unlock.
+const int BUTTONS[] = {2, 3, 4};      // buttons 1, 2 and 3, each to GND
+const int GREEN = 9, RED = 10;
+const int CODE[] = {1, 3, 2};
+const int LENGTH = 3;
+int position = 0;                     // how many correct presses so far
+
+int readButton() {                    // returns 1–3 when a button is pressed, otherwise 0
+  for (int i = 0; i < 3; i++) {
+    if (digitalRead(BUTTONS[i]) == LOW) {
+      delay(20);
+      while (digitalRead(BUTTONS[i]) == LOW) {}   // wait for release
+      delay(20);
+      return i + 1;
+    }
+  }
+  return 0;
+}
+
+void blink(int pin, int times) {
+  for (int i = 0; i < times; i++) {
+    digitalWrite(pin, HIGH); delay(150);
+    digitalWrite(pin, LOW);  delay(150);
+  }
+}
+
+void setup() {
+  for (int i = 0; i < 3; i++) pinMode(BUTTONS[i], INPUT_PULLUP);
+  pinMode(GREEN, OUTPUT);
+  pinMode(RED, OUTPUT);
+}
+
+void loop() {
+  int b = readButton();
+  if (b == 0) return;                 // nothing pressed
+  if (b == CODE[position]) {
+    position++;
+    if (position == LENGTH) {         // the whole code is right
+      digitalWrite(GREEN, HIGH);
+      delay(3000);                    // "unlocked" for 3 seconds
+      digitalWrite(GREEN, LOW);
+      position = 0;
+    }
+  } else {
+    position = 0;                     // wrong: start again
+    blink(RED, 3);
+  }
+}`,
+  expect:'Pressing 1, 3, 2 lights the green LED for 3 seconds. Any wrong button flashes red three times and starts over.',
+  how:'position remembers how far through the code you are; each correct press moves it on and any mistake resets it — a small state machine.',
+  tryThis:['Use a servo as the lock bolt.', 'Lock out for 10 seconds after three wrong attempts.', 'Make the code longer.'],
   pins:['uno', 'button'] },
 ];
