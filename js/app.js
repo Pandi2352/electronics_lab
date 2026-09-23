@@ -367,14 +367,24 @@ function showView(view, scroll){
   viewHooks[view]?.();
 }
 
+function setViewHash(view){
+  try{
+    if(window.history && history.replaceState) history.replaceState(null, '', '#' + view);
+    else if(location.hash !== '#' + view) location.hash = view;
+  }catch(e){}
+}
+
 navBtns.forEach(btn => {
   btn.addEventListener('click', () => {
-    if(location.hash !== '#' + btn.dataset.view) location.hash = btn.dataset.view;
-    else showView(btn.dataset.view, true);
+    const view = btn.dataset.view;
+    showView(view, true);
+    setViewHash(view);
   });
 });
-window.addEventListener('hashchange', () => showView(location.hash.slice(1), true));
-showView(location.hash.slice(1), false);
+window.addEventListener('hashchange', () => {
+  try{ showView(location.hash.slice(1), true); }catch(e){}
+});
+try{ showView(location.hash.slice(1), false); }catch(e){ showView(VIEWS[0], false); }
 
 /* ============ THEME ============ */
 document.getElementById('themebtn').addEventListener('click', () => {

@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Electronics Beginner Lab</title>
 <meta name="description" content="Shopping list, component guide, breadboard exercises, boards, sensors, outputs and projects for a beginner electronics and IoT lab.">
+<link rel="icon" type="image/svg+xml" href="img/logo.svg">
+<link rel="alternate icon" type="image/jpeg" href="img/logo.jpg">
 <script>
   // Apply the saved theme before first paint to avoid a flash.
   try{ const t = localStorage.getItem('lab-theme'); if(t) document.documentElement.dataset.theme = t; }catch(e){}
@@ -25,7 +27,9 @@
 <header>
   <div class="htop">
     <div class="brand">
-      <div class="chip" aria-hidden="true">🔌</div>
+      <div class="brand-badge" aria-hidden="true">
+        <img src="img/logo.svg" alt="" class="brand-logo" width="34" height="34">
+      </div>
       <div><h1>Electronics Beginner Lab</h1><p>Master shopping list &amp; component guide</p></div>
     </div>
     <div class="hright">
@@ -48,7 +52,7 @@
   <!-- SHOPPING VIEW -->
   <section id="view-shop" class="view active">
     <div class="hero">
-      <h2>Buy once. Build 30+ breadboard exercises. No missing resistors this time.</h2>
+      <h2>Buy once. Build 30+ breadboard exercises.</h2>
       <p>Everything below is organized by category. Search for a part, tick items off as you order them, and use the filters to see just your "Buy now" starter cart or the "Buy later" phase-2 items. Your progress is saved automatically on this device.</p>
       <div class="progress-row">
         <div class="bar" role="progressbar" aria-label="Checklist progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="progbar"></i></div>

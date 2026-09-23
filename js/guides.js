@@ -285,7 +285,8 @@ const itemName = (kind, id) => kind === 'b' ? BOARD_BY_ID[id].name : (kind === '
 // Show an item in its own tab (switching tabs first if needed).
 function openItem(kind, id){
   const view = VIEW_OF[kind];
-  if(location.hash !== '#' + view) location.hash = view;
+  if(typeof showView === 'function') showView(view, true);
+  if(typeof setViewHash === 'function') setViewHash(view);
   setTimeout(() => JUMP[kind](id), 60);
 }
 
