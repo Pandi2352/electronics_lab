@@ -404,6 +404,7 @@ $('tool-jumps').addEventListener('click', e => {
 
 /* ============ ROADMAP ============ */
 const roadState = loadJSON('lab-roadmap');
+const roadList = $('road-list');
 const goView = view => {
   if(typeof showView === 'function') {
     showView(view, true);

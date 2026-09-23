@@ -246,14 +246,15 @@ mark{background:color-mix(in srgb,var(--yellow) 38%,transparent);color:inherit;b
 .catbody>div{overflow:hidden;min-height:0}
 .searching .catbody{grid-template-rows:1fr;visibility:visible;transition:none}
 .item.nomatch{display:none}
-.items{padding:2px 14px 14px 58px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(230px,100%),1fr));gap:8px}
+.items{padding:2px 14px 14px 58px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:8px}
 .item{
-  display:flex; align-items:flex-start; gap:9px; background:var(--surface);
-  border:1px solid var(--line); border-radius:var(--radius); padding:9px 10px; font-size:.86rem;
+  display:flex; align-items:center; gap:9px; background:var(--surface);
+  border:1px solid var(--line); border-radius:var(--radius); padding:8px 11px; font-size:.86rem; min-height:40px;
 }
-.item input{margin-top:2px;accent-color:var(--primary);width:16px;height:16px;flex-shrink:0;cursor:pointer}
-.item label{cursor:pointer;flex:1}
-.item .qty{color:var(--sub);font-weight:500}
+.item input{accent-color:var(--primary);width:16px;height:16px;flex-shrink:0;cursor:pointer;margin:0}
+.item label{cursor:pointer;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:baseline;gap:6px}
+.item .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .qty{color:var(--sub);font-weight:500;flex-shrink:0;white-space:nowrap}
 .item.checked{opacity:.55}
 .item.checked label{text-decoration:line-through}
 
@@ -985,9 +986,12 @@ footer{
   }
   .cathead .chev{align-self:center}
   .cathead .note{font-size:.78rem}
-  .items{padding:0 12px 12px;grid-template-columns:repeat(auto-fill,minmax(125px,1fr))}
-  .item{min-height:44px;align-items:center}
+  .items{padding:0 12px 12px;grid-template-columns:1fr;gap:6px}
+  .item{min-height:44px;align-items:center;padding:8px 12px;gap:10px}
   .item input{margin:0;width:18px;height:18px}
+  .item label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
+  .item .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .item .qty{flex-shrink:0;white-space:nowrap}
 
   .learngrid{columns:1}
   .lcard-body{padding:12px}
