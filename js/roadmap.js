@@ -1,6 +1,6 @@
 /* Learning roadmap: electronics → Arduino → ESP32 → IoT → robotics.
    links: [type, id, label] — type is view, tool, board or project. exStages: exercise stages that count
-   towards this step. Milestone ids are stable keys for saved ticks. */
+   towards this step; lessons: true counts the Arduino lessons. Milestone ids are stable keys for saved ticks. */
 
 const ROADMAP = [
 { id:'foundations', short:'Foundations', title:'Foundations: power, resistors & LEDs', weeks:'1–2 weeks',
@@ -50,7 +50,8 @@ const ROADMAP = [
     ['m-pwm', 'Fade an LED and move a servo with PWM'],
     ['m-redo', 'Rebuild three earlier exercises with code instead of chips'],
   ],
-  links:[['board', 'uno', 'Arduino UNO pinout'], ['view', 'outputs', 'Outputs — light & sound'], ['tool', 'ohm', 'Ohm’s law calculator']] },
+  lessons:true,
+  links:[['view', 'arduino', 'Arduino lessons'], ['board', 'uno', 'Arduino UNO pinout'], ['view', 'outputs', 'Outputs — light & sound'], ['tool', 'ohm', 'Ohm’s law calculator']] },
 
 { id:'modules', short:'Modules', title:'Sensor & output modules', weeks:'3 weeks',
   goal:'Use I2C, SPI and 1-Wire modules, displays and motor drivers.',

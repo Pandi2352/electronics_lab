@@ -532,6 +532,22 @@ mark{background:color-mix(in srgb,var(--yellow) 38%,transparent);color:inherit;b
 .rz-body{fill:#e3cb9a;stroke:#b6975d;stroke-width:1.5}
 .rz-band{stroke:rgba(0,0,0,.25);stroke-width:.8}
 
+/* ---- Arduino lessons ---- */
+.callout.setup{margin-top:14px}
+.redo{margin:0 0 14px;font-size:.84rem;color:var(--sub)}
+.code{border:1px solid #1f2633;border-radius:var(--radius);overflow:hidden;background:#0d1117}
+.codehead{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px 6px 12px;background:#161b22;border-bottom:1px solid #1f2633}
+.codehead span{font:500 .75rem/1 ui-monospace,SFMono-Regular,Consolas,monospace;color:#8b949e}
+.copybtn{height:26px;padding:0 10px;border:1px solid #30363d;border-radius:4px;background:#21262d;color:#e6edf3;font:inherit;font-size:.75rem;cursor:pointer}
+.copybtn:hover{background:#30363d}
+.code pre{margin:0;padding:12px 14px;overflow-x:auto;font:.8rem/1.55 ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:#e6edf3;tab-size:2}
+.tk-c{color:#8b949e;font-style:italic}
+.tk-s{color:#a5d6ff}
+.tk-p{color:#ff7b72}
+.tk-k{color:#ff7b72}
+.tk-n{color:#79c0ff}
+.tk-f{color:#d2a8ff}
+
 /* ---- Learning view ---- */
 .learn-intro{margin-bottom:16px}
 .learngrid{
@@ -1058,6 +1074,22 @@ footer{
   body[data-print="ex-todo"] .cat.ex.done,body[data-print="ex-todo"] .stage:not(:has(.cat.ex:not(.done))){display:none !important}
   body[data-print="ex-all"] .cat.ex,body[data-print="ex-todo"] .cat.ex{break-inside:avoid}
   .exbody,.bbody{grid-template-columns:minmax(0,1fr) 250px !important;padding:4px 10px 10px !important}
+
+  /* Arduino lessons */
+  body[data-print^="ls"] .stage.hidden,body[data-print^="ls"] .cat.lesson.hidden{display:block !important}
+  body[data-print="ls-todo"] .cat.lesson.done,body[data-print="ls-todo"] .stage:not(:has(.cat.lesson:not(.done))){display:none !important}
+  body[data-print="ls-all"] .cat.lesson,body[data-print="ls-todo"] .cat.lesson{break-inside:avoid}
+  .code{background:#fff;border-color:#9ca3af}
+  .codehead{background:#f3f4f6;border-color:#9ca3af}
+  .codehead span{color:#374151}
+  .copybtn{display:none}
+  .cat.lesson .exbody{grid-template-columns:minmax(0,1fr) !important}
+  .cat.lesson .exside{max-width:420px}
+  .code pre{color:#111;white-space:pre-wrap;font-size:8.5pt}
+  .tk-c{color:#6b7280}
+  .tk-s,.tk-n{color:#1d4ed8}
+  .tk-k,.tk-p{color:#b91c1c}
+  .tk-f{color:#6d28d9}
 
   /* One exercise / one project */
   body[data-print$="-one"] .cat:not(.print-target),body[data-print$="-one"] .stagehead{display:none !important}

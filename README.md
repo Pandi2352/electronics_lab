@@ -12,6 +12,7 @@ It is plain HTML, CSS and JavaScript: no build step, no framework, no server and
 | **Shopping** | A master shopping list of 176 parts in 23 categories, each marked *Buy now* or *Buy later*. Tick items as you order them, search by name (`10k`, `LED`, `uf`, `ohm`) and filter by phase. |
 | **Components** | A plain-language guide to 42 components. 20 of the cards have pinout diagrams (LED, transistors, MOSFETs, 555, op-amps, logic chips, 7-segment display…). |
 | **Component Images** | A visual photo gallery of all 42 components with real physical hardware images, search by name/role, category filters, and an interactive lightbox modal to inspect component packages, pin orientations and details. |
+| **Arduino** | 17 Arduino UNO lessons in 6 units, from Blink to state machines: buttons and debouncing, the Serial Monitor, analog input, PWM, an NTC thermometer, tones, servos, a MOSFET motor driver, an I2C scanner, an LCD, a 74HC595 and multitasking with millis(). Each has wiring, a complete sketch with a Copy button, the expected result, how it works and ideas to try next. |
 | **Exercises** | 30 breadboard exercises in 7 stages, from measuring your 5V supply to a 555-driven LED chaser. Each one has its parts, steps, expected result and relevant pinouts. Mark exercises as done to track progress. |
 | **Boards** | 10 boards (Arduino UNO/Nano/Mega, ESP8266, ESP32 DevKit/S3/C3/C6, Pico, Raspberry Pi) with specs, key pins, common mistakes and a comparison table. Full pinout diagrams for the UNO, the ESP32 DevKit V1 (30-pin) and the Pico. |
 | **Sensors** | 93 sensors in 16 categories, from simple (LDR, thermistor) to advanced (BME688, GNSS). Each lists what it measures, its output type and what it is used for. Includes a recommended 28-sensor starter collection. |
@@ -62,12 +63,14 @@ components/
     ├── outputs.js      Outputs & drivers (OUTPUT_GROUPS, OUTPUT_KIT)
     ├── projects.js     Guided projects (PROJECTS)
     ├── roadmap.js      Learning roadmap stages and milestones (ROADMAP)
+    ├── lessons.js      Arduino lessons and their sketches (LESSON_UNITS, LESSONS)
     ├── tools.js        Calculators (TOOLS)
     ├── app.js          Shopping, Components and Exercises views; tabs; theme
-    └── guides.js       Roadmap, Boards, Sensors, Outputs, Projects and Tools views; printing
+    ├── guides.js       Roadmap, Boards, Sensors, Outputs, Projects and Tools views; printing
+    └── lessons-view.js Arduino lessons view: code highlighting, copy, progress
 ```
 
-The scripts are classic `<script defer>` files that share global constants, so their load order in `index.html` matters: data files first (including `tools.js`), then `app.js`, then `guides.js`.
+The scripts are classic `<script defer>` files that share global constants, so their load order in `index.html` matters: data files first (including `tools.js`), then `app.js`, then `guides.js`, then the views that build on it (`lessons-view.js`).
 
 ## Editing the content
 
@@ -104,6 +107,10 @@ needs:['b:esp32-devkit|esp32-c3',   // board: any one of these
 
 `b:` = board, `s:` = sensor, `o:` = output, `|` = any one of them, `?` = optional. Anything that is not tracked in a guide goes in `parts`.
 
+### Add an Arduino lesson
+
+Add an object to `LESSONS` in `js/lessons.js` with an `id`, a `unit` (from `LESSON_UNITS`), `title`, `goal`, `parts`, `wiring` steps, the full `code` as a template string, `expect`, `how`, `tryThis` and `pins` (pinout keys). `redo` optionally names the exercise it rebuilds.
+
 ### Add a roadmap stage or milestone
 
 Edit `ROADMAP` in `js/roadmap.js`. `milestones` are `[id, text]` pairs; `exStages` lists the exercise stages whose progress counts towards the stage; `links` are `[type, id, label]`, where `type` is `view` (a tab), `tool` (a calculator), `board` or `project`.
@@ -114,7 +121,7 @@ Add an entry to `PINOUTS` in `js/pinouts.js` with a `title`, a `note` and a `dra
 
 ### Rules for ids
 
-- **Never rename or reuse an `id`** in exercises, sensors, outputs, boards, projects or roadmap milestones. Saved progress is stored by `id`, so renaming one loses its tick.
+- **Never rename or reuse an `id`** in exercises, lessons, sensors, outputs, boards, projects or roadmap milestones. Saved progress is stored by `id`, so renaming one loses its tick.
 - The shopping list is the exception: its ticks are stored by **position** (`B-3`), so inserting or removing an item shifts the ticks after it. Add new shopping items at the **end** of a category until this is fixed (see [Roadmap](#roadmap)).
 
 ## Saved data
@@ -130,6 +137,7 @@ Everything is saved in the browser's `localStorage`, on this device only:
 | `lab-outputs` | Outputs you have |
 | `lab-projects` | Projects marked built |
 | `lab-roadmap` | Roadmap milestones ticked |
+| `lab-lessons` | Arduino lessons marked done |
 | `lab-theme` | Light/dark choice |
 
 Clearing site data, using a private window, or switching browser or device starts you with empty progress. If storage is blocked, the site still works; it just doesn't save anything.
@@ -145,6 +153,8 @@ The guides are for learning with low-voltage DC circuits. Mains voltage (230V/12
 - [x] Calculators tab
 - [x] Learning roadmap
 - [x] Print / Save as PDF sheets
+- [x] Arduino lessons
+- [ ] ESP32 lessons and IoT (MQTT, dashboards) lessons
 - [ ] Communication tab: UART, I2C, SPI, 1-Wire, Wi-Fi, BLE, ESP-NOW, LoRa, MQTT
 - [ ] Power & batteries tab: Li-ion, chargers, buck/boost converters, deep sleep
 - [ ] Offline install (PWA) and free hosting on GitHub Pages

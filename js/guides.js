@@ -404,6 +404,7 @@ $('tool-jumps').addEventListener('click', e => {
 
 /* ============ ROADMAP ============ */
 const roadState = loadJSON('lab-roadmap');
+const lessonState = loadJSON('lab-lessons');      // shared with lessons-view.js
 const roadList = $('road-list');
 const goView = view => {
   if(typeof showView === 'function') {
@@ -413,14 +414,16 @@ const goView = view => {
   }
 };
 
-// Follow a roadmap link: another tab, a board, a project, a calculator or an exercise stage.
+// Follow a link: another tab, a board, a project, a calculator, an exercise (stage) or a lesson.
 function openTarget(type, id){
   if(type === 'view') return goView(id);
   if(type === 'board') return openItem('b', id);
-  goView({ tool:'tools', project:'projects', exstage:'exercises' }[type]);
+  goView({ tool:'tools', project:'projects', exstage:'exercises', exercise:'exercises', lesson:'arduino' }[type]);
   setTimeout(() => {
     if(type === 'tool') flashTool(id);
     else if(type === 'project') reveal($('proj-' + id));
+    else if(type === 'exercise') reveal($('exercise-' + id));
+    else if(type === 'lesson') reveal($('lesson-' + id));
     else document.querySelector(`#exlist .stage[data-stage="${id}"]`).scrollIntoView({ behavior:'smooth', block:'start' });
   }, 60);
 }
@@ -449,6 +452,7 @@ ROADMAP.forEach((r, i) => {
         <section class="exsec"><h5>Milestones</h5><ul class="milestones">${r.milestones.map(([id, text]) =>
           `<li><label class="have ms"><input type="checkbox" data-ms="${id}" ${roadState[id] ? 'checked' : ''}><span>${text}</span></label></li>`).join('')}</ul></section>
         ${r.exStages ? `<section class="exsec"><h5>Exercises</h5><p class="exprog"></p></section>` : ''}
+        ${r.lessons ? `<section class="exsec"><h5>Lessons</h5><p class="lsprog"></p></section>` : ''}
       </div>
       <aside class="exside"><div class="needs">
         <h5>Use these</h5>
@@ -480,8 +484,9 @@ function refreshRoadmap(){
   ROADMAP.forEach((r, i) => {
     const el = $('road-' + r.id);
     const ms = r.milestones.filter(([id]) => roadState[id]).length;
-    const exs = r.exStages ? exercisesIn(r.exStages) : [];
-    const exDone = exs.filter(ex => exState[ex.id]).length;
+    // Exercises and lessons linked to the stage count as steps, alongside its milestones.
+    const exs = [...(r.exStages ? exercisesIn(r.exStages) : []), ...(r.lessons ? LESSONS : [])];
+    const exDone = exs.filter(x => (r.lessons && LESSONS.includes(x) ? lessonState : exState)[x.id]).length;
     doneAll += ms + exDone;
     total += r.milestones.length + exs.length;
     const complete = ms === r.milestones.length && exDone === exs.length;
@@ -492,6 +497,8 @@ function refreshRoadmap(){
     el.querySelector('.tag.here').hidden = current !== r;
     const prog = el.querySelector('.exprog');
     if(prog) prog.textContent = `${exDone} of ${exs.length} exercises marked done in the Exercises tab.`;
+    const lsProg = el.querySelector('.lsprog');
+    if(lsProg) lsProg.textContent = `${LESSONS.filter(l => lessonState[l.id]).length} of ${LESSONS.length} Arduino lessons marked done.`;
   });
   setBar($('road-bar'), doneAll, total);
   $('road-txt').textContent = `${doneAll} / ${total} steps done`;
@@ -508,10 +515,12 @@ if(currentStage) setOpen($('road-' + currentStage.id), true);
 const PRINT_TITLES = {
   'shop-all':'Shopping list', 'shop-todo':'Shopping list — still to buy',
   'ex-all':'Breadboard exercises', 'ex-todo':'Breadboard exercises — still to do',
+  'ls-all':'Arduino lessons', 'ls-todo':'Arduino lessons — still to do',
   'roadmap':'Learning roadmap',
 };
+const PRINT_KIND = { ex:'Exercise', ls:'Lesson', proj:'Project' };
 function printSheet(mode, target){
-  const title = PRINT_TITLES[mode] || (mode === 'ex-one' ? 'Exercise' : 'Project') + ': ' + target.querySelector('.title').textContent;
+  const title = PRINT_TITLES[mode] || `${PRINT_KIND[mode.split('-')[0]]}: ${target.querySelector('.title').textContent}`;
   $('printhead').innerHTML = `<b>${title}</b><span>Electronics Beginner Lab · ${new Date().toLocaleDateString()}</span>`;
   document.body.dataset.print = mode;
   target?.classList.add('print-target');
