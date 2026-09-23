@@ -404,8 +404,13 @@ $('tool-jumps').addEventListener('click', e => {
 
 /* ============ ROADMAP ============ */
 const roadState = loadJSON('lab-roadmap');
-const roadList = $('road-list');
-const goView = view => { if(location.hash !== '#' + view) location.hash = view; };
+const goView = view => {
+  if(typeof showView === 'function') {
+    showView(view, true);
+  } else if(location.hash !== '#' + view) {
+    try { location.hash = view; } catch(e){}
+  }
+};
 
 // Follow a roadmap link: another tab, a board, a project, a calculator or an exercise stage.
 function openTarget(type, id){

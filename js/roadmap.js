@@ -13,7 +13,7 @@ const ROADMAP = [
     ['m-led-calc', 'Work out an LED resistor by hand, then check it with the calculator'],
   ],
   exStages:[1],
-  links:[['view', 'shop', 'Shopping list'], ['view', 'learn', 'Component guide'], ['tool', 'led', 'LED resistor calculator'], ['tool', 'color', 'Resistor colour code']] },
+  links:[['view', 'shop', 'Shopping list'], ['tool', 'led', 'LED resistor calculator'], ['tool', 'color', 'Resistor colour code']] },
 
 { id:'logic', short:'Logic & capacitors', title:'Switches, logic, diodes & capacitors', weeks:'2 weeks',
   goal:'Control circuits with switches and logic gates, and see how diodes and capacitors behave.',

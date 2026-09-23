@@ -227,9 +227,55 @@ const learngrid = document.getElementById('learngrid');
 LEARN.forEach(l => {
   const c = document.createElement('article');
   c.className = 'lcard';
-  c.innerHTML = `<h4>${l.name}</h4><p class="role">${l.role}</p><p>${l.text}</p><div class="spec">${l.spec}</div>`;
+  c.tabIndex = 0;
+  c.setAttribute('role', 'button');
+  c.setAttribute('aria-label', `View details for ${l.name}`);
+
+  const d = (typeof COMPONENT_DETAILS !== 'undefined' && COMPONENT_DETAILS[l.name]) ? COMPONENT_DETAILS[l.name] : {};
+  const imgHTML = l.img ? `<div class="lcard-img-wrap"><img src="${l.img}" alt="${l.name}" loading="lazy" class="lcard-img" onerror="this.parentElement.style.display='none'"></div>` : '';
+  
+  c.innerHTML = `
+    ${imgHTML}
+    <div class="lcard-body">
+      <h4>${l.name}</h4>
+      <p class="role">${l.role}</p>
+      <p class="lcard-desc">${l.text}</p>
+
+      <div class="lcard-details">
+        <div class="lcard-detail what">
+          <span class="lcard-detail-label">What it is used for</span>
+          <span class="lcard-detail-text">${d.what || l.role}</span>
+        </div>
+        <div class="lcard-detail why">
+          <span class="lcard-detail-label">Why to use it</span>
+          <span class="lcard-detail-text">${d.why || 'Essential circuit element for reliable signal control and electrical safety.'}</span>
+        </div>
+      </div>
+
+      <div class="spec">${l.spec}</div>
+    </div>
+  `;
   const pins = PD.block(l.pins);
-  if(pins) c.appendChild(pins);
+  if(pins) {
+    const pwrap = document.createElement('details');
+    pwrap.className = 'lcard-pinout-wrap';
+    pwrap.innerHTML = `<summary class="lcard-pinout-toggle"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M5 7h6M5 10h4"/></svg>Pinout &amp; Wiring Diagram</summary>`;
+    pwrap.appendChild(pins);
+    pwrap.addEventListener('click', e => e.stopPropagation());
+    c.querySelector('.lcard-body').appendChild(pwrap);
+  }
+
+  c.addEventListener('click', e => {
+    if(e.target.closest('details')) return;
+    if(window.openComponentPopup) window.openComponentPopup(l);
+  });
+  c.addEventListener('keydown', e => {
+    if(e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if(window.openComponentPopup) window.openComponentPopup(l);
+    }
+  });
+
   learngrid.appendChild(c);
 });
 

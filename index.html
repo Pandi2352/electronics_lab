@@ -23,6 +23,7 @@
 <script src="js/tools.js" defer></script>
 <script src="js/app.js" defer></script>
 <script src="js/guides.js" defer></script>
+<script src="js/gallery.js" defer></script>
 </head>
 <body>
 
@@ -39,6 +40,7 @@
         <button type="button" class="active" data-view="roadmap" aria-current="page">Roadmap</button>
         <button type="button" data-view="shop">Shopping</button>
         <button type="button" data-view="learn">Components</button>
+        <button type="button" data-view="gallery">Component Images</button>
         <button type="button" data-view="exercises">Exercises</button>
         <button type="button" data-view="boards">Boards</button>
         <button type="button" data-view="sensors">Sensors</button>
@@ -121,6 +123,37 @@
       <p>A plain-language field guide to each part in your kit — what it is, how it behaves in a circuit, and where you'll use it in your first 30 exercises. Skim it once before you start breadboarding, then come back to a card whenever you meet that component again.</p>
     </div>
     <div class="learngrid" id="learngrid"></div>
+  </section>
+
+  <!-- COMPONENT IMAGES GALLERY VIEW -->
+  <section id="view-gallery" class="view">
+    <div class="hero">
+      <h2>Component Images</h2>
+      <p>High-resolution visual catalog of all 42 electronic components in your kit. Inspect real physical packages, pin configurations, markings, and form factors before breadboarding.</p>
+      <div class="search">
+        <svg class="search-ic" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.75" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <input id="gallery-search" type="search" placeholder="Search component photos: resistor, LED, 555, transistor, capacitor..." autocomplete="off" spellcheck="false" aria-label="Search component images">
+        <kbd class="search-key" aria-hidden="true">/</kbd>
+        <button type="button" id="gallery-clear" class="search-clear" aria-label="Clear search" hidden><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="filterrow">
+        <div class="seg" id="gallery-cats" role="group" aria-label="Filter by category">
+          <button type="button" class="on" data-gc="all" aria-pressed="true">All (42)</button>
+          <button type="button" data-gc="passives" aria-pressed="false">Resistors &amp; Caps</button>
+          <button type="button" data-gc="semis" aria-pressed="false">Diodes &amp; Transistors</button>
+          <button type="button" data-gc="ics" aria-pressed="false">ICs &amp; Logic</button>
+          <button type="button" data-gc="io" aria-pressed="false">Displays &amp; Motors</button>
+          <button type="button" data-gc="tools" aria-pressed="false">Tools &amp; Power</button>
+        </div>
+        <span class="spacer"></span>
+        <span id="gallery-count" class="progtxt">42 components</span>
+      </div>
+    </div>
+    <div class="gallerygrid" id="gallerygrid"></div>
+    <div id="gallery-empty" class="empty" hidden>
+      <p>No component images match your search.</p>
+      <button type="button" class="btn" id="gallery-reset">Show all images</button>
+    </div>
   </section>
 
   <!-- EXERCISES VIEW -->
@@ -284,6 +317,72 @@
 </main>
 
 <footer>Built for your electronics learning lab · buy → learn → breadboard → Arduino → ESP32 → IoT</footer>
+
+<!-- COMPONENT IMAGE DETAILS MODAL -->
+<dialog id="img-lightbox" class="lightbox-modal" aria-labelledby="lightbox-title">
+  <div class="lightbox-content">
+    <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close dialog">&times;</button>
+    <div class="lightbox-img-box">
+      <img id="lightbox-img" src="" alt="">
+    </div>
+    <div class="lightbox-info">
+      <div class="lightbox-header-section">
+        <div class="lightbox-meta">
+          <span id="lightbox-cat" class="tag"></span>
+        </div>
+        <h3 id="lightbox-title"></h3>
+        <p id="lightbox-role" class="role"></p>
+        <p id="lightbox-desc"></p>
+      </div>
+
+      <div class="lightbox-details-grid">
+        <div class="detail-block what-block">
+          <div class="detail-label">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="8" cy="8" r="7"/><path d="M8 5v3.5M8 11.5h.01"/></svg>
+            <span>What it is used for</span>
+          </div>
+          <p id="lightbox-what" class="detail-text"></p>
+        </div>
+
+        <div class="detail-block why-block">
+          <div class="detail-label">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M8 1.5l1.8 4 4.2.4-3.1 2.8.9 4.3L8 10.8 4.2 13l.9-4.3-3.1-2.8 4.2-.4z"/></svg>
+            <span>Why to use it &amp; why it matters</span>
+          </div>
+          <p id="lightbox-why" class="detail-text"></p>
+        </div>
+
+        <div class="detail-block how-block">
+          <div class="detail-label">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 8h11M8 2.5v11"/><circle cx="8" cy="8" r="3"/></svg>
+            <span>How it works in a circuit</span>
+          </div>
+          <p id="lightbox-how" class="detail-text"></p>
+        </div>
+      </div>
+
+      <div class="detail-block spec-block">
+        <div class="detail-label">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M5 7h6M5 10h4"/></svg>
+          <span>Key Specs &amp; Circuit Rules</span>
+        </div>
+        <div id="lightbox-spec" class="spec"></div>
+      </div>
+
+      <div id="lightbox-pins-section" class="lightbox-pins-section" hidden>
+        <div class="detail-label">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 2v4M7 2v4M11 2v4M3 10v4M7 10v4M11 10v4"/><rect x="2" y="6" width="12" height="4" rx="1"/></svg>
+          <span>Pinout &amp; Connections</span>
+        </div>
+        <div id="lightbox-pins"></div>
+      </div>
+
+      <div class="lightbox-actions">
+        <button type="button" class="btn primary" id="lightbox-close-btn">Close</button>
+      </div>
+    </div>
+  </div>
+</dialog>
 
 </body>
 </html>
