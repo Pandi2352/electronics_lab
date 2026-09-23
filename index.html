@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Electronics Beginner Lab</title>
+<meta name="description" content="Shopping list, component guide, breadboard exercises, boards, sensors, outputs and projects for a beginner electronics and IoT lab.">
+<script>
+  // Apply the saved theme before first paint to avoid a flash.
+  try{ const t = localStorage.getItem('lab-theme'); if(t) document.documentElement.dataset.theme = t; }catch(e){}
+</script>
+<link rel="stylesheet" href="css/styles.css">
+<script src="js/data.js" defer></script>
+<script src="js/exercises.js" defer></script>
+<script src="js/pinouts.js" defer></script>
+<script src="js/sensors.js" defer></script>
+<script src="js/boards.js" defer></script>
+<script src="js/outputs.js" defer></script>
+<script src="js/projects.js" defer></script>
+<script src="js/app.js" defer></script>
+<script src="js/guides.js" defer></script>
+</head>
+<body>
+
+<header>
+  <div class="htop">
+    <div class="brand">
+      <div class="chip" aria-hidden="true">🔌</div>
+      <div><h1>Electronics Beginner Lab</h1><p>Master shopping list &amp; component guide</p></div>
+    </div>
+    <div class="hright">
+      <nav class="seg" aria-label="Sections">
+        <button type="button" class="active" data-view="shop" aria-current="page">Shopping</button>
+        <button type="button" data-view="learn">Components</button>
+        <button type="button" data-view="exercises">Exercises</button>
+        <button type="button" data-view="boards">Boards</button>
+        <button type="button" data-view="sensors">Sensors</button>
+        <button type="button" data-view="outputs">Outputs</button>
+        <button type="button" data-view="projects">Projects</button>
+      </nav>
+      <button type="button" class="btn icon" id="themebtn" aria-label="Toggle light/dark theme" title="Toggle theme"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SHOPPING VIEW -->
+  <section id="view-shop" class="view active">
+    <div class="hero">
+      <h2>Buy once. Build 30+ breadboard exercises. No missing resistors this time.</h2>
+      <p>Everything below is organized by category. Search for a part, tick items off as you order them, and use the filters to see just your "Buy now" starter cart or the "Buy later" phase-2 items. Your progress is saved automatically on this device.</p>
+      <div class="progress-row">
+        <div class="bar" role="progressbar" aria-label="Checklist progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="progbar"></i></div>
+        <span id="progtxt" class="progtxt">0 / 0 checked</span>
+      </div>
+      <div class="search">
+        <svg class="search-ic" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.75" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <input id="search" type="search" placeholder="Search parts: 10k, LED, 555…" autocomplete="off" spellcheck="false" aria-label="Search parts" aria-describedby="searchstatus">
+        <kbd class="search-key" aria-hidden="true">/</kbd>
+        <button type="button" id="searchclear" class="search-clear" aria-label="Clear search" hidden><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      </div>
+      <p id="searchstatus" class="searchstatus" aria-live="polite"></p>
+      <div class="filterrow">
+        <div class="seg" role="group" aria-label="Filter by phase">
+          <button type="button" class="on" data-f="all" aria-pressed="true">All items</button>
+          <button type="button" data-f="now" aria-pressed="false"><span class="dot now"></span>Buy now</button>
+          <button type="button" data-f="later" aria-pressed="false"><span class="dot later"></span>Buy later</button>
+        </div>
+        <span class="spacer"></span>
+        <button type="button" class="btn" id="togglebtn">Expand all</button>
+        <button type="button" class="btn danger" id="resetbtn">Reset checklist</button>
+      </div>
+    </div>
+
+    <div id="catlist"></div>
+    <div id="shopempty" class="empty" hidden>
+      <p>No parts match <b id="emptyq"></b>.</p>
+      <button type="button" class="btn" id="emptyclear">Clear search</button>
+    </div>
+  </section>
+
+  <!-- LEARN VIEW -->
+  <section id="view-learn" class="view">
+    <div class="hero learn-intro">
+      <h2>What every component actually does</h2>
+      <p>A plain-language field guide to each part in your kit — what it is, how it behaves in a circuit, and where you'll use it in your first 30 exercises. Skim it once before you start breadboarding, then come back to a card whenever you meet that component again.</p>
+    </div>
+    <div class="learngrid" id="learngrid"></div>
+  </section>
+
+  <!-- EXERCISES VIEW -->
+  <section id="view-exercises" class="view">
+    <div class="hero">
+      <h2>30 breadboard exercises</h2>
+      <p>Seven stages, from your first LED to a 555-driven LED chaser. Each exercise lists the parts, the wiring steps, what you should see and the pinouts you need. Mark exercises done as you go — progress is saved on this device.</p>
+      <div class="progress-row">
+        <div class="bar" role="progressbar" aria-label="Exercise progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="exbar"></i></div>
+        <span id="extxt" class="progtxt">0 / 0 done</span>
+      </div>
+      <div class="filterrow">
+        <div class="seg" role="group" aria-label="Filter exercises">
+          <button type="button" class="on" data-ef="all" aria-pressed="true">All</button>
+          <button type="button" data-ef="todo" aria-pressed="false">To do</button>
+          <button type="button" data-ef="done" aria-pressed="false">Done</button>
+        </div>
+        <span class="spacer"></span>
+        <button type="button" class="btn" id="extoggle">Expand all</button>
+      </div>
+    </div>
+    <div id="exlist"></div>
+  </section>
+
+  <!-- BOARDS VIEW -->
+  <section id="view-boards" class="view">
+    <div class="hero">
+      <h2>Boards</h2>
+      <p>The microcontrollers and computers for your next stage — from the 5V Arduino UNO to the ESP32 family and the Raspberry Pi. Each board lists its specs, the pins that matter and the mistakes to avoid. Tick the boards you own; the projects use them.</p>
+      <div class="callout logicnote">
+        <h5>5V vs 3.3V — the rule that matters most</h5>
+        <p>Arduino UNO, Nano and Mega use 5V signals. ESP32, ESP8266 and Pico use 3.3V and can be damaged by 5V on a pin. From a 5V module into a 3.3V board use a voltage divider (e.g. 1kΩ + 2kΩ) or a level shifter; for I2C between 5V and 3.3V use a bidirectional BSS138 level shifter.</p>
+      </div>
+    </div>
+    <section class="panel">
+      <h3 class="panelhead">Which board should I use?</h3>
+      <div class="choices" id="board-choices"></div>
+    </section>
+    <section class="panel">
+      <h3 class="panelhead">Compare</h3>
+      <div class="tablewrap"><table class="compare" id="board-table"></table></div>
+    </section>
+    <div id="board-list"></div>
+  </section>
+
+  <!-- SENSORS VIEW -->
+  <section id="view-sensors" class="view">
+    <div class="hero">
+      <h2>Sensor guide for IoT</h2>
+      <p>Every sensor for your next stage, grouped from simple single components to advanced digital modules. Each one explains what it measures, how it connects and what it is used for. Tick the ones you have — the recommended starter collection is at the end.</p>
+      <div class="flows">
+        <div class="flowblock"><span class="flowlabel">Learning order</span><div class="flow" id="sensor-path"></div></div>
+        <div class="flowblock"><span class="flowlabel">For example</span><div class="flow" id="sensor-example"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="bar" role="progressbar" aria-label="Starter kit progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="sensor-kitbar"></i></div>
+        <span id="sensor-kittxt" class="progtxt"></span>
+      </div>
+      <div class="search">
+        <svg class="search-ic" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.75" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <input id="sensor-search" type="search" placeholder="Search sensors: humidity, I2C, BME280…" autocomplete="off" spellcheck="false" aria-label="Search sensors" aria-describedby="sensor-status">
+        <kbd class="search-key" aria-hidden="true">/</kbd>
+        <button type="button" id="sensor-clear" class="search-clear" aria-label="Clear search" hidden><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      </div>
+      <p id="sensor-status" class="searchstatus" aria-live="polite"></p>
+      <div class="filterrow">
+        <div class="seg" id="sensor-levels" role="group" aria-label="Filter by level">
+          <button type="button" class="on" data-lv="all" aria-pressed="true">All</button>
+          <button type="button" data-lv="b" aria-pressed="false"><span class="dot lv-b"></span>Basic</button>
+          <button type="button" data-lv="i" aria-pressed="false"><span class="dot lv-i"></span>Intermediate</button>
+          <button type="button" data-lv="a" aria-pressed="false"><span class="dot lv-a"></span>Advanced</button>
+        </div>
+        <button type="button" class="btn" id="sensor-kitonly" aria-pressed="false">Starter kit only</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn" id="sensor-toggle">Expand all</button>
+      </div>
+    </div>
+    <div id="sensor-list"></div>
+    <div id="sensor-empty" class="empty" hidden>
+      <p>No sensors match these filters.</p>
+      <button type="button" class="btn" id="sensor-reset">Clear filters</button>
+    </div>
+  </section>
+
+  <!-- OUTPUTS VIEW -->
+  <section id="view-outputs" class="view">
+    <div class="hero">
+      <h2>Outputs & drivers</h2>
+      <p>The other half of every project: lights, displays, sound, relays, motors and the driver boards that connect them safely to your microcontroller. Each card says what control signal it needs and what power it draws. The recommended starter set is at the end.</p>
+      <ul class="rules" id="output-rules"></ul>
+      <div class="progress-row">
+        <div class="bar" role="progressbar" aria-label="Starter kit progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="output-kitbar"></i></div>
+        <span id="output-kittxt" class="progtxt"></span>
+      </div>
+      <div class="search">
+        <svg class="search-ic" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.75" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <input id="output-search" type="search" placeholder="Search outputs: servo, I2C, relay…" autocomplete="off" spellcheck="false" aria-label="Search outputs" aria-describedby="output-status">
+        <kbd class="search-key" aria-hidden="true">/</kbd>
+        <button type="button" id="output-clear" class="search-clear" aria-label="Clear search" hidden><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      </div>
+      <p id="output-status" class="searchstatus" aria-live="polite"></p>
+      <div class="filterrow">
+        <div class="seg" id="output-levels" role="group" aria-label="Filter by level">
+          <button type="button" class="on" data-lv="all" aria-pressed="true">All</button>
+          <button type="button" data-lv="b" aria-pressed="false"><span class="dot lv-b"></span>Basic</button>
+          <button type="button" data-lv="i" aria-pressed="false"><span class="dot lv-i"></span>Intermediate</button>
+          <button type="button" data-lv="a" aria-pressed="false"><span class="dot lv-a"></span>Advanced</button>
+        </div>
+        <button type="button" class="btn" id="output-kitonly" aria-pressed="false">Starter kit only</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn" id="output-toggle">Expand all</button>
+      </div>
+    </div>
+    <div id="output-list"></div>
+    <div id="output-empty" class="empty" hidden>
+      <p>No outputs match these filters.</p>
+      <button type="button" class="btn" id="output-reset">Clear filters</button>
+    </div>
+  </section>
+
+  <!-- PROJECTS VIEW -->
+  <section id="view-projects" class="view">
+    <div class="hero">
+      <h2>Projects</h2>
+      <p>Guided builds that combine your boards, sensors and outputs, step by step. Each project checks the “Have it” ticks from the Boards, Sensors and Outputs tabs and shows exactly what you still need.</p>
+      <div class="progress-row">
+        <div class="bar" role="progressbar" aria-label="Projects built" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="proj-bar"></i></div>
+        <span id="proj-txt" class="progtxt"></span>
+      </div>
+      <div class="filterrow">
+        <div class="seg" id="proj-levels" role="group" aria-label="Filter by level">
+          <button type="button" class="on" data-lv="all" aria-pressed="true">All</button>
+          <button type="button" data-lv="b" aria-pressed="false"><span class="dot lv-b"></span>Beginner</button>
+          <button type="button" data-lv="i" aria-pressed="false"><span class="dot lv-i"></span>Intermediate</button>
+          <button type="button" data-lv="a" aria-pressed="false"><span class="dot lv-a"></span>Advanced</button>
+        </div>
+        <button type="button" class="btn" id="proj-ready" aria-pressed="false">Ready to build</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn" id="proj-toggle">Expand all</button>
+      </div>
+    </div>
+    <div id="proj-list"></div>
+    <p id="proj-empty" class="empty" hidden>No projects match. Tick more parts as “Have it” in the Boards, Sensors and Outputs tabs.</p>
+  </section>
+
+</main>
+
+<footer>Built for your electronics learning lab · buy → learn → breadboard → Arduino → ESP32 → IoT</footer>
+
+</body>
+</html>
