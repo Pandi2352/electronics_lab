@@ -30,6 +30,7 @@ It is plain HTML, CSS and JavaScript: no build step, no framework, no server and
 - **Arduino Nano** — the board and its parts, the Nano family, specifications, a pinout diagram, power, setup and troubleshooting (CH340, old bootloader), breadboard wiring, **30 projects in 4 levels** (fundamentals → sensors → small systems → advanced: interrupts, sleep, EEPROM, shift register, stepper, ESP32 bridge), the first 5 projects with circuits and complete sketches, the first-10 sequence, the Nano → IoT path, common mistakes and a ₹ buy list.
 - **Arduino UNO** — the board and the UNO family (R3, clones, R4 Minima / WiFi), specifications, pinout, power (including regulator heat), setup, **shields**, UNO vs Nano, **28 projects in 5 levels** (digital I/O → analog & sound → sensors & displays → motors → advanced systems such as data loggers, RFID, robots and an ESP32 bridge) with links to the matching code lessons, the first-10 sequence, common mistakes, three routes to IoT and a ₹ buy list grouped by level.
 - **ESP32 DevKit** — the board and the ESP32 family (S2, S3, C3, C6, CAM), specifications, pinout with a **safe-pins table** (boot pins, input-only pins, ADC1 vs ADC2), power and brown-outs, setup (board package, BOOT button), **3.3V rules & level shifting**, Wi-Fi / Bluetooth / MQTT / ESP-NOW / OTA explained, **27 projects in 5 levels** (basics → sensors & displays → Wi-Fi & web → IoT protocols → advanced: deep sleep, OTA, FreeRTOS, a Wi-Fi RC car, ESP32 → NestJS → React), the first 5 projects with complete sketches (including a web server and MQTT), the first-10 sequence, common mistakes and a ₹ buy list.
+- **RC Car / Robot** — the parts of a car, chassis and steering types, motors (speed, torque, stall current), **motor drivers** (L298N, TB6612FNG, BTS7960…) with the H-bridge truth table and wiring, batteries and power wiring (2S 18650, BMS, buck converter, stopping resets), control options (IR, Bluetooth, Wi-Fi, ESP-NOW, nRF24, hobby RC), sensors, drive logic (arcade mixing, deadband, ramping, **failsafe**), **28 projects in 5 levels** (motors & power → self-driving Nano robots → ESP32 remote control → sensors & feedback → FPV camera, mecanum, telemetry dashboard, GPS rover), the first 6 projects with complete sketches (motor test, obstacle avoider, line follower, Wi-Fi web-joystick car, ESP-NOW remote + car), common mistakes, the path to NestJS + React and a ₹ buy list.
 - **Bluetooth Amplifier** — how the module works (Bluetooth receiver → DAC → class-D amplifier), the types of board (5V PAM8403 mini boards, 12–24V TPA3116D2 stereo / 2.1 / mono), reading the specs honestly, terminals and **bridged-output wiring**, choosing a power supply (voltage vs watts, lithium packs), speakers and enclosures, first power-up and troubleshooting (hum, whine, pops), **26 projects in 5 levels** (first sound → real speakers & power → portable & battery → Arduino add-ons → your own ESP32 Bluetooth speaker), the first 5 builds with measurements (two with sketches: an LED VU meter and an ESP32 A2DP receiver), common mistakes and a ₹ buy list.
 
 Across the whole site:
@@ -66,7 +67,7 @@ components/
 ├── index.html          Page layout and the tab views
 ├── kit.html            Starter-kit buy list page
 ├── curriculum.html     51-project curriculum page
-├── guides.html         Guides page with a sidebar (Before Arduino, Arduino Nano, Arduino UNO, ESP32 DevKit, Bluetooth Amplifier)
+├── guides.html         Guides page with a sidebar (Before Arduino, Arduino Nano, Arduino UNO, ESP32 DevKit, RC Car / Robot, Bluetooth Amplifier)
 ├── css/
 │   └── styles.css      All styles, theme colours and the mobile layout
 └── js/
@@ -86,6 +87,7 @@ components/
     ├── nano.js         Arduino Nano guide content (NANO)
     ├── uno.js          Arduino UNO guide content (UNO)
     ├── esp32.js        ESP32 DevKit guide content (ESP32)
+    ├── rccar.js        RC car / robot guide content (RCCAR)
     ├── btamp.js        Bluetooth amplifier module guide content (BTAMP)
     ├── guides-page.js  guides.html view: sidebar, drawer, sections, buy list (standalone)
     ├── lessons.js      Arduino lessons and their sketches (LESSON_UNITS, LESSONS)
@@ -175,6 +177,8 @@ Everything is saved in the browser's `localStorage`, on this device only:
 | `lab-uno-guide-buy` | Arduino UNO buy-list ticks |
 | `lab-esp32-guide` | ESP32 DevKit guide projects built |
 | `lab-esp32-guide-buy` | ESP32 DevKit buy-list ticks |
+| `lab-rccar-guide` | RC car / robot guide projects built |
+| `lab-rccar-guide-buy` | RC car / robot buy-list ticks |
 | `lab-btamp-guide` | Bluetooth amplifier guide projects built |
 | `lab-btamp-guide-buy` | Bluetooth amplifier buy-list ticks |
 | `lab-theme` | Light/dark choice |
