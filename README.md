@@ -22,6 +22,8 @@ It is plain HTML, CSS and JavaScript: no build step, no framework, no server and
 
 **Starter kit page (`kit.html`).** The yellow-and-blue **Starter kit** button at the bottom right of every tab opens it in a new tab: the complete buy list in 30 sections (tools, prototyping, resistors, capacitors, semiconductors, ICs, displays, sensors, motors, power, batteries, connectors, safety…). All 271 parts show their quantity, priority, *when* you need them (Day 1 → Later) and what they are used for. It also has the recommended 75-item “buy now” checklist, the learning-progression diagram, search, a “when” filter and printing.
 
+**Project curriculum page (`curriculum.html`).** The violet **51 projects** button, stacked above the Starter kit button, opens the full practical curriculum: 51 projects in 9 phases, from an LED circuit to an ESP32 smart RC car. Each project lists what it teaches, every component with quantities, and its diagrams (build/logic drawings, flow chains and what each display should show). You can mark projects as built, record your predicted and measured voltages for project 4, filter by phase or status, search and print.
+
 Across the whole site:
 
 - **Light and dark themes.** It follows your system setting; the half-circle button in the header overrides it.
@@ -55,6 +57,7 @@ Any static host works for publishing it: GitHub Pages, Netlify or Cloudflare Pag
 components/
 ├── index.html          Page layout and the tab views
 ├── kit.html            Starter-kit buy list page
+├── curriculum.html     51-project curriculum page
 ├── css/
 │   └── styles.css      All styles, theme colours and the mobile layout
 └── js/
@@ -68,6 +71,8 @@ components/
     ├── roadmap.js      Learning roadmap stages and milestones (ROADMAP)
     ├── kit.js          Starter-kit buy list (KIT_SECTIONS, KIT_BUY_NOW, KIT_PATH)
     ├── kit-view.js     kit.html view (standalone — does not load app.js)
+    ├── curriculum.js   51-project curriculum (CUR_PHASES, CUR_PROJECTS, CUR_STAGES)
+    ├── curriculum-view.js curriculum.html view (standalone)
     ├── lessons.js      Arduino lessons and their sketches (LESSON_UNITS, LESSONS)
     ├── tools.js        Calculators (TOOLS)
     ├── app.js          Shopping, Components and Exercises views; tabs; theme
@@ -144,6 +149,8 @@ Everything is saved in the browser's `localStorage`, on this device only:
 | `lab-roadmap` | Roadmap milestones ticked |
 | `lab-lessons` | Arduino lessons marked done |
 | `lab-kit` | Buy-now list items ticked on the starter-kit page |
+| `lab-curriculum` | Curriculum projects marked built |
+| `lab-cur-measure` | Voltages recorded in curriculum project 4 |
 | `lab-theme` | Light/dark choice |
 
 Clearing site data, using a private window, or switching browser or device starts you with empty progress. If storage is blocked, the site still works; it just doesn't save anything.

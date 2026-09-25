@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Project Curriculum</title>
+<meta name="description" content="51 projects in 9 phases: pure breadboard electronics, Arduino, sensors, motors, data, ESP32/IoT and robotics — ending with a smart RC car.">
+<link rel="icon" href="img/logo.svg" type="image/svg+xml">
+<script>
+  // Apply the saved theme before first paint to avoid a flash.
+  try{ const t = localStorage.getItem('lab-theme'); if(t) document.documentElement.dataset.theme = t; }catch(e){}
+</script>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/kit.css">
+<link rel="stylesheet" href="css/curriculum.css">
+<script src="js/curriculum.js" defer></script>
+<script src="js/curriculum-view.js" defer></script>
+</head>
+<body class="kitpage curpage">
+
+<header>
+  <div class="htop">
+    <a class="brand" href="index.html">
+      <div class="brand-badge" aria-hidden="true">
+        <img src="img/logo.svg" alt="" class="brand-logo" width="34" height="34">
+      </div>
+      <div><h1>Project Curriculum</h1><p>51 projects · Electronics Beginner Lab</p></div>
+    </a>
+    <a class="btn" href="index.html"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M11 7H3M6 4 3 7l3 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Back<span class="k-long">to the lab</span></a>
+    <button type="button" class="btn icon" id="themebtn" aria-label="Toggle light/dark theme" title="Toggle theme"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <section class="hero k-hero">
+    <p class="k-eyebrow">Electronics + Arduino + IoT project roadmap</p>
+    <h2>51 projects, from an LED to a smart RC car</h2>
+    <p>Your complete beginner project curriculum: pure breadboard electronics first, then Arduino, then sensors and communication, and finally ESP32, IoT and robotics. It deliberately avoids jumping straight into advanced modules — each project builds on the one before.</p>
+    <div class="k-stats" id="c-stats"></div>
+    <div class="progress-row">
+      <div class="bar" role="progressbar" aria-label="Projects built" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="c-bar"></i></div>
+      <span id="c-txt" class="progtxt"></span>
+    </div>
+
+    <div class="c-most">
+      <h3>Most important thing</h3>
+      <p>For projects 1–14, don’t worry about Arduino at all. Your learning should be:</p>
+      <div id="c-method"></div>
+      <p>Then Arduino becomes the next layer, rather than a magic box that makes LEDs blink.</p>
+    </div>
+
+    <div class="search">
+      <svg class="search-ic" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.75" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <input id="c-search" type="search" placeholder="Search projects or parts: servo, DHT22, MQTT…" autocomplete="off" spellcheck="false" aria-label="Search projects" aria-describedby="c-status">
+      <kbd class="search-key" aria-hidden="true">/</kbd>
+      <button type="button" id="c-clear" class="search-clear" aria-label="Clear search" hidden><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+    </div>
+    <p id="c-status" class="searchstatus" aria-live="polite"></p>
+
+    <div class="k-filterhead">
+      <span class="flowlabel">Phase</span>
+      <div class="k-actions">
+        <div class="seg" id="c-statusf" role="group" aria-label="Filter by status">
+          <button type="button" class="on" data-v="all" aria-pressed="true">All</button>
+          <button type="button" data-v="todo" aria-pressed="false">To build</button>
+          <button type="button" data-v="done" aria-pressed="false">Built</button>
+        </div>
+        <button type="button" class="btn" id="c-print"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3.5 5V1.5h7V5M3.5 10.5h-2v-5h11v5h-2M3.5 8.5h7v4h-7z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>Print</button>
+        <button type="button" class="btn" id="c-toggle">Expand all</button>
+      </div>
+    </div>
+    <div class="seg k-when" id="c-phases" role="group" aria-label="Filter by phase"></div>
+  </section>
+
+  <section class="panel c-progression">
+    <h3 class="panelhead">The complete progression</h3>
+    <div class="tablewrap"><table class="compare c-stagetable" id="c-stages"></table></div>
+  </section>
+
+  <nav class="k-toc" id="c-toc" aria-label="Phases"></nav>
+
+  <div id="c-list"></div>
+</main>
+
+<footer>Electronics Beginner Lab · <a href="index.html">Back to the lab</a> · <a href="kit.html">Starter kit</a></footer>
+
+</body>
+</html>
