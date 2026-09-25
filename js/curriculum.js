@@ -312,12 +312,43 @@ const CUR_BUY = {
     ] },
   ],
   owned:['Digital multimeter'],
-  optional:[
-    ['Second full-size breadboard', 1, 90, 150, 'Keep one circuit built while you start the next.'],
-    ['Pre-cut solid-core jumper wire kit', 1, 100, 200, 'Flat, tidy wiring that is much easier to debug.'],
-    ['Component storage box', 1, 100, 250, 'Stops small parts turning into one mixed pile.'],
-    ['Resistor assortment kit (about 600 pcs, 30 values)', 1, 200, 350, 'Replaces the four resistor lines above and covers every later project.'],
-    ['5mm LED assortment (about 100 pcs, 5 colours)', 1, 100, 180, 'Replaces the three LED lines above with plenty of spares.'],
+  /* Extras: [name, qty, low ₹, high ₹, why, recommended?]. Recommended items start ticked ("add to my order"). */
+  extras:[
+    { title:'Extra components', note:'Spares, assortments and extra values to experiment beyond the listed parts.', items:[
+      ['Resistor assortment kit (about 600 pcs, 30 values)', 1, 200, 350, 'Every standard value — replaces the four resistor lines above and covers all later projects.'],
+      ['5mm LED assortment (about 100 pcs, 5 colours)', 1, 100, 180, 'Replaces the three LED lines above with plenty of spares.'],
+      ['Electrolytic capacitor assortment (about 120 pcs, 12 values)', 1, 150, 250, 'Try every value in the RC projects (6, 7, 13).'],
+      ['Ceramic capacitor assortment (about 300 pcs)', 1, 100, 200, 'Decoupling and timing values from pF to 100nF.'],
+      ['470Ω, 4.7kΩ and 100kΩ resistors (10 each)', 30, 0.5, 1, 'Swap values in projects 1, 6 and 13 and predict the change before you measure it.'],
+      ['5.1V Zener diode', 5, 1, 3, 'Extends project 8 into voltage clamping and battery indicators.'],
+      ['8-pin DIP IC socket', 5, 2, 4, 'Protects the 555 chips in projects 13–14 and makes swapping them easy.', true],
+      ['5V active buzzer', 2, 8, 15, 'Compare it with the passive buzzer in project 14.'],
+      ['4×AA battery holder with switch', 1, 40, 70, 'A separate supply for the motor in project 10, so it can’t upset the breadboard supply.', true],
+      ['AA rechargeable batteries (NiMH)', 4, 60, 110, 'For the battery holder — cheaper than alkaline over time.'],
+      ['9V battery + snap clip', 1, 30, 60, 'Run the 555 flasher away from the desk.'],
+    ] },
+    { title:'Tools', note:'Not listed in the projects, but you will use them in every one.', items:[
+      ['Wire stripper', 1, 150, 300, 'Strips solid-core wire cleanly without nicking the copper.', true],
+      ['Flush / side cutter', 1, 100, 250, 'Trims LED and resistor legs so parts sit flat on the breadboard.', true],
+      ['Alligator clip test leads (pack of 10)', 1, 60, 120, 'Clip the multimeter to a part hands-free while you turn the pot (projects 4, 6, 8).', true],
+      ['Pre-cut solid-core jumper wire kit', 1, 100, 200, 'Flat, colour-coded wiring that is much easier to follow and debug.', true],
+      ['Component storage box', 1, 100, 250, 'Stops small parts turning into one mixed pile.', true],
+      ['Long-nose pliers', 1, 100, 200, 'Bend legs, straighten pins and push parts into tight spots.'],
+      ['Precision screwdriver set', 1, 100, 250, 'Screw terminals and the small trimpots on modules.'],
+      ['Tweezers set', 1, 80, 150, 'Place and pull out small parts on a crowded breadboard.'],
+      ['Second full-size breadboard', 1, 90, 150, 'Keep one circuit built while you start the next.'],
+      ['Solid-core hookup wire, 22 AWG (several colours)', 1, 100, 250, 'Cut your own wires to exact length.'],
+      ['Safety glasses', 1, 60, 150, 'Clipped legs fly — wear them when cutting.'],
+    ] },
+    { title:'Advanced — nice to have', note:'Not needed for projects 1–14, but they make learning faster and you will want them later.', items:[
+      ['Component tester (LCR-T4 / M328)', 1, 350, 600, 'Identifies transistor pinouts and measures capacitors, diodes and resistors automatically — great for projects 6–12.'],
+      ['Adjustable buck converter (LM2596) + 12V adapter', 1, 250, 450, 'Vary the supply voltage in projects 1–5 and watch the current change, exactly as Ohm’s law predicts.'],
+      ['Temperature-controlled soldering iron kit', 1, 400, 900, 'Needed from Phase 2 onwards to solder header pins onto modules.'],
+      ['Helping hands with magnifier', 1, 250, 500, 'Holds boards and wires while you solder.'],
+      ['USB logic analyser (8-channel)', 1, 500, 800, 'Shows digital signals such as the 555 output on your PC; essential later for I2C and SPI.'],
+      ['Mini oscilloscope kit (DSO138 type)', 1, 1500, 2500, 'See the 555 waveforms and the capacitor charging curve from projects 6 and 13–14.'],
+      ['Bench power supply, 0–30V 5A with current limiting', 1, 3000, 5000, 'Safe, adjustable power: a short circuit stops at your current limit instead of burning parts.'],
+    ] },
   ],
   tips:[
     'Prices are estimates — they vary a lot by seller and quality. Check before you order.',
@@ -365,10 +396,12 @@ const CUR_BUY2 = {
   ],
   owned:['Arduino UNO', 'USB cable for the UNO (USB-A to USB-B)', 'Full-size breadboard (830-point)', 'Male-to-male jumper wires (pack of 40)',
     '220Ω resistor', '10kΩ resistor', 'Red 5mm LED', 'Green 5mm LED', '6×6mm push button', '10kΩ potentiometer', 'LDR (photoresistor)', 'Passive buzzer'],
-  optional:[
-    ['Extra SG90 servo', 1, 90, 150, 'Servos are easy to strip by forcing the arm — a spare saves waiting for delivery.'],
-    ['0.96″ I2C OLED display', 1, 150, 250, 'Not needed until Phase 3, but it uses the same I2C wiring you learn in project 24.'],
-    ['Arduino Nano', 1, 250, 400, 'A second board lets one project stay built while you start the next.'],
+  extras:[
+    { title:'Optional extras', note:'Useful additions for Phase 2 and the next phases.', items:[
+      ['Extra SG90 servo', 1, 90, 150, 'Servos are easy to strip by forcing the arm — a spare saves waiting for delivery.'],
+      ['0.96″ I2C OLED display', 1, 150, 250, 'Not needed until Phase 3, but it uses the same I2C wiring you learn in project 24.'],
+      ['Arduino Nano', 1, 250, 400, 'A second board lets one project stay built while you start the next.'],
+    ] },
   ],
   tips:[
     'Prices are estimates — they vary a lot by seller and quality. Check before you order.',

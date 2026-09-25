@@ -112,6 +112,12 @@
       return buy.owned.includes(name);
     };
     const items = buy.groups.flatMap(g => g.items);
+    const extras = (buy.extras || []).flatMap(x => x.items);
+    // Extras are opt-in: "add to my order". Recommended ones start ticked.
+    const added = ([name, , , , , rec]) => {
+      const k = `${buy.phase}:x:${name}`;
+      return k in haveState ? haveState[k] : !!rec;
+    };
     const el = document.createElement('div');
     el.className = 'cat c-buy';
     el.id = 'buy-' + buy.phase;
@@ -135,22 +141,32 @@
               <td data-label="Price each" class="num">${unit(lo, hi)}</td>
               <td data-label="Cost" class="num"><b>${money(qty * lo)}–${money(qty * hi).slice(1)}</b></td>
             </tr>`).join('')}</tbody>`).join('')}
-          <tfoot><tr><th colspan="5" scope="row">Estimated total (items you still need)</th><td class="num"><b class="c-buytotal"></b></td></tr></tfoot>
+          <tfoot><tr><th colspan="5" scope="row">Core parts you still need</th><td class="num"><b class="c-buycore"></b></td></tr></tfoot>
         </table></div>
-        <section class="exsec"><h5>Optional extras</h5>
-          <ul class="c-optlist">${buy.optional.map(([name, qty, lo, hi, why]) =>
-            `<li><div><b>${esc(name)}</b><span>${esc(why)}</span></div><em>${unit(lo, hi)}</em></li>`).join('')}</ul>
-        </section>
+        ${(buy.extras || []).map(x => `<section class="exsec c-extra"><h5>${esc(x.title)}</h5>${x.note ? `<p class="c-hint">${esc(x.note)}</p>` : ''}
+          <ul class="c-optlist">${x.items.map(([name, qty, lo, hi, why, rec]) => `
+            <li data-extra="${esc(name)}">
+              <label class="c-add"><input type="checkbox" data-add="${esc(name)}" aria-label="Add to my order: ${esc(name)}"><span>Add</span></label>
+              <div><b>${esc(name)}${rec ? ' <i class="c-rec">Recommended</i>' : ''}</b><span>${esc(why)}</span></div>
+              <em>${qty > 1 ? `${qty} × ${unit(lo, hi)}<br>` : ''}<strong>${money(qty * lo)}–${money(qty * hi).slice(1)}</strong></em>
+            </li>`).join('')}</ul></section>`).join('')}
+        <div class="c-grand">
+          <div><span>Core parts</span><b class="c-g-core"></b></div>
+          <div><span>Extras you added</span><b class="c-g-extra"></b></div>
+          <div class="total"><span>Estimated total</span><b class="c-buytotal"></b></div>
+        </div>
         <section class="exsec"><h5>Money-saving tips</h5><ul class="watch plain">${buy.tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul></section>
         <div class="c-foot"><button type="button" class="btn c-buyprint">Print this list</button></div>
       </div></div></div>`;
 
     el.querySelector('.cathead').addEventListener('click', () => setOpen(el, !el.classList.contains('open')));
     el.querySelectorAll('[data-have]').forEach(cb => { cb.checked = has(cb.dataset.have); });
+    el.querySelectorAll('[data-add]').forEach(cb => { cb.checked = added(extras.find(x => x[0] === cb.dataset.add)); });
     el.addEventListener('change', e => {
-      const name = e.target.dataset.have;
-      if(!name) return;
-      haveState[`${buy.phase}:${name}`] = e.target.checked;
+      const { have: haveName, add: addName } = e.target.dataset;
+      if(haveName) haveState[`${buy.phase}:${haveName}`] = e.target.checked;
+      else if(addName) haveState[`${buy.phase}:x:${addName}`] = e.target.checked;
+      else return;
       save('lab-cur-buy', haveState);
       update();
     });
@@ -176,15 +192,28 @@
         lo += qty * l;
         hi += qty * h;
       });
-      const range = `${money(lo)} – ${money(hi)}`;
+      let xlo = 0, xhi = 0, xn = 0;
+      extras.forEach(item => {
+        const on = added(item);
+        el.querySelector(`li[data-extra="${CSS.escape(item[0])}"]`).classList.toggle('added', on);
+        if(!on) return;
+        xn++;
+        xlo += item[1] * item[2];
+        xhi += item[1] * item[3];
+      });
+      const r = (a, b) => `${money(a)} – ${money(b)}`;
+      const range = r(lo + xlo, hi + xhi);
+      el.querySelector('.c-buycore').textContent = r(lo, hi);
+      el.querySelector('.c-g-core').textContent = r(lo, hi);
+      el.querySelector('.c-g-extra').textContent = xn ? `${r(xlo, xhi)} (${xn})` : '—';
       el.querySelector('.c-buytotal').textContent = range;
-      el.querySelector('.c-buymeta').textContent = `≈ ${money(lo)}–${money(hi).slice(1)}`;
+      el.querySelector('.c-buymeta').textContent = `≈ ${money(lo + xlo)}–${money(hi + xhi).slice(1)}`;
       el.querySelector('.c-buystats').innerHTML = `
-        <div><b>${need}</b><span>items to buy</span></div>
+        <div><b>${need + xn}</b><span>items to buy</span></div>
         <div><b>${range}</b><span>estimated total</span></div>
         <div><b>${have}</b><span>already have</span></div>`;
       const btn = $('c-buybtn-' + buy.phase);
-      if(btn) btn.querySelector('span').textContent = `${need} items · ≈ ${money(lo)}–${money(hi).slice(1)}`;
+      if(btn) btn.querySelector('span').textContent = `${need + xn} items · ≈ ${money(lo + xlo)}–${money(hi + xhi).slice(1)}`;
     }
 
     // Sits at the top of its phase, under the phase heading.

@@ -86,10 +86,24 @@
 .c-buytable tfoot th,.c-buytable tfoot td{border-bottom:none;border-top:2px solid var(--line3);padding-top:12px;font-size:.9rem;color:var(--ink)}
 .c-buytable tfoot b{font-size:1rem}
 .c-optlist{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-.c-optlist li{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:8px 10px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.c-optlist li{
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:start;gap:4px 12px;padding:9px 10px;
+  border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);
+}
+.c-optlist li.added{border-color:color-mix(in srgb,var(--green) 55%,transparent);background:color-mix(in srgb,var(--green) 6%,var(--surface))}
+.c-add{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;font-size:.66rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--sub)}
+.c-add input{width:16px;height:16px;margin:2px 0 0;accent-color:var(--green);cursor:pointer}
+.c-rec{margin-left:6px;padding:1px 6px;border-radius:4px;font-style:normal;font-size:.66rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--green);border:1px solid color-mix(in srgb,var(--green) 45%,transparent);vertical-align:1px}
+.c-extra .c-hint{margin-top:-2px}
+.c-grand{display:grid;gap:6px;padding:12px 14px;border:1px solid var(--line3);border-radius:var(--radius);background:var(--inset)}
+.c-grand div{display:flex;justify-content:space-between;gap:12px;font-size:.86rem;color:var(--body)}
+.c-grand b{font-weight:600;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums}
+.c-grand .total{padding-top:8px;border-top:1px solid var(--line3);font-size:.95rem;color:var(--ink)}
+.c-grand .total b{font-size:1.05rem;color:var(--green)}
 .c-optlist b{display:block;font-size:.86rem;font-weight:600;color:var(--ink)}
 .c-optlist span{font-size:.8rem;color:var(--sub)}
-.c-optlist em{flex-shrink:0;font-style:normal;font-size:.84rem;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.c-optlist em{font-style:normal;font-size:.76rem;line-height:1.4;text-align:right;color:var(--sub);font-variant-numeric:tabular-nums;white-space:nowrap}
+.c-optlist em strong{font-size:.84rem;font-weight:600;color:var(--ink)}
 
 @media (max-width:640px){
   /* Stack each buy-list row as a small card */
@@ -114,6 +128,10 @@
   .c-buytable tfoot tr{display:flex;justify-content:space-between;gap:8px;padding-top:10px;border-top:2px solid var(--line3)}
   .c-buytable tfoot th,.c-buytable tfoot td{border:none;padding:0}
   .c-screen{min-width:0;font-size:.85rem}
+  .c-optlist li{grid-template-columns:auto minmax(0,1fr)}
+  .c-optlist em{grid-column:2;text-align:left}
+  .c-optlist em br{display:none}
+  .c-optlist em strong{margin-left:6px}
   .c-foot .btn{flex:1;height:40px}
 }
 
@@ -127,5 +145,7 @@
   body[data-print="buy"] .c-phase:not(:has(.print-target)){display:none !important}
   body:not([data-print="buy"]) .c-buy{display:none !important}
   .c-buytable tr.owned td{opacity:1}
+  .c-optlist li:not(.added){display:none}
+  .c-extra:not(:has(li.added)){display:none}
   body[data-print="one"] .c-proj:not(.print-target),body[data-print="one"] .stagehead,body[data-print="one"] .c-intro{display:none !important}
 }
