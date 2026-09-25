@@ -1,8 +1,8 @@
 /* Guides page (guides.html): an accordion sidebar of guides, one guide shown at a time.
-   Guides: js/nano.js (NANO), js/uno.js (UNO), js/esp32.js (ESP32). The address remembers the place: guides.html#uno/shields */
+   Guides: js/nano.js (NANO), js/uno.js (UNO), js/esp32.js (ESP32), js/btamp.js (BTAMP). The address remembers the place: guides.html#uno/shields */
 
 (() => {
-  const GUIDES = [NANO, UNO, ESP32];
+  const GUIDES = [NANO, UNO, ESP32, BTAMP];
   const $ = id => document.getElementById(id);
   const load = key => { try{ return JSON.parse(localStorage.getItem(key) || '{}') || {}; }catch(e){ return {}; } };
   const save = (key, v) => { try{ localStorage.setItem(key, JSON.stringify(v)); }catch(e){} };
@@ -10,6 +10,8 @@
   const ARROW = `<svg class="flow-arrow" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 7h8M8 4l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   const CHEV = `<svg class="g-chev" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M4 5.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   const BOARD_IC = `<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="4" y="1.5" width="8" height="13" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M2 4.5h2M2 7h2M2 9.5h2M2 12h2M12 4.5h2M12 7h2M12 9.5h2M12 12h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+  const SPEAKER_IC = `<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="9.5" r="2.6" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="4.5" r="0.9" fill="currentColor"/></svg>`;
+  const ICONS = { board:BOARD_IC, speaker:SPEAKER_IC };
   const NOTE_ICON = { key:'!', tip:'i', warn:'⚠' };
   const flowHTML = steps => `<div class="flow">${steps.map(s => `<span class="flowstep">${esc(s)}</span>`).join(ARROW)}</div>`;
   const pills = items => `<div class="k-chips left">${items.map(i => `<span class="flowstep">${esc(i)}</span>`).join('')}</div>`;
@@ -82,7 +84,7 @@
         </div>
         ${p.noteKey ? `<p class="k-note key"><b aria-hidden="true">!</b>${esc(p.noteKey)}</p>` : ''}
         ${p.noteTip ? `<p class="k-note tip"><b aria-hidden="true">i</b>${esc(p.noteTip)}</p>` : ''}
-        <section class="exsec"><h5>Sketch</h5>${codeHTML(`${g.id}-project-${p.n}.ino`, p.code)}</section>
+        ${p.code ? `<section class="exsec"><h5>Sketch</h5>${codeHTML(`${g.id}-project-${p.n}.ino`, p.code)}</section>` : ''}
       </article>`).join('');
 
     const sequenceHTML = () => `<ol class="g-seq">${g.sequence.map((s, i) => `<li><span>${String(i + 1).padStart(2, '0')}</span>${esc(s)}</li>`).join('')}</ol>`;
@@ -156,7 +158,7 @@
     group.dataset.guide = g.id;
     group.innerHTML = `
       <button type="button" class="g-grouphead" aria-expanded="false" aria-controls="links-${g.id}">
-        <span class="g-groupic" aria-hidden="true">${BOARD_IC}</span>
+        <span class="g-groupic" aria-hidden="true">${ICONS[g.icon] || BOARD_IC}</span>
         <span class="g-groupname">${esc(g.menu)}<small class="g-groupprog"></small></span>
         ${CHEV}
       </button>
