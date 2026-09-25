@@ -20,6 +20,8 @@ It is plain HTML, CSS and JavaScript: no build step, no framework, no server and
 | **Projects** | 10 guided builds (plant monitor, weather station, RC car, alarm, GPS tracker…). Each project checks your *Have it* ticks from Boards, Sensors and Outputs, and shows either **Ready to build** or exactly what is missing. |
 | **Tools** | 9 calculators: resistor colour code (both directions), Ohm's law, LED resistor, voltage divider with an ESP32/UNO ADC check, 555 timer, RC time constant, battery life, series & parallel, and capacitor codes. Inputs accept shorthand such as `4k7`, `2.2M`, `100n` and `4R7`. |
 
+**Starter kit page (`kit.html`).** The yellow-and-blue **Starter kit** button at the bottom right of every tab opens it in a new tab: the complete buy list in 30 sections (tools, prototyping, resistors, capacitors, semiconductors, ICs, displays, sensors, motors, power, batteries, connectors, safety…). All 271 parts show their quantity, priority, *when* you need them (Day 1 → Later) and what they are used for. It also has the recommended 75-item “buy now” checklist, the learning-progression diagram, search, a “when” filter and printing.
+
 Across the whole site:
 
 - **Light and dark themes.** It follows your system setting; the half-circle button in the header overrides it.
@@ -51,7 +53,8 @@ Any static host works for publishing it: GitHub Pages, Netlify or Cloudflare Pag
 
 ```
 components/
-├── index.html          Page layout and the 9 tab views
+├── index.html          Page layout and the tab views
+├── kit.html            Starter-kit buy list page
 ├── css/
 │   └── styles.css      All styles, theme colours and the mobile layout
 └── js/
@@ -63,6 +66,8 @@ components/
     ├── outputs.js      Outputs & drivers (OUTPUT_GROUPS, OUTPUT_KIT)
     ├── projects.js     Guided projects (PROJECTS)
     ├── roadmap.js      Learning roadmap stages and milestones (ROADMAP)
+    ├── kit.js          Starter-kit buy list (KIT_SECTIONS, KIT_BUY_NOW, KIT_PATH)
+    ├── kit-view.js     kit.html view (standalone — does not load app.js)
     ├── lessons.js      Arduino lessons and their sketches (LESSON_UNITS, LESSONS)
     ├── tools.js        Calculators (TOOLS)
     ├── app.js          Shopping, Components and Exercises views; tabs; theme
@@ -138,6 +143,7 @@ Everything is saved in the browser's `localStorage`, on this device only:
 | `lab-projects` | Projects marked built |
 | `lab-roadmap` | Roadmap milestones ticked |
 | `lab-lessons` | Arduino lessons marked done |
+| `lab-kit` | Buy-now list items ticked on the starter-kit page |
 | `lab-theme` | Light/dark choice |
 
 Clearing site data, using a private window, or switching browser or device starts you with empty progress. If storage is blocked, the site still works; it just doesn't save anything.

@@ -548,6 +548,38 @@ mark{background:color-mix(in srgb,var(--yellow) 38%,transparent);color:inherit;b
 .tk-n{color:#79c0ff}
 .tk-f{color:#d2a8ff}
 
+/* ---- Floating "Starter kit" button (opens kit.html) ---- */
+.kitfab{
+  position:fixed;z-index:40;
+  right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 16px 0 6px;
+  border-radius:var(--radius);border:2px solid color-mix(in srgb,#fff 30%,var(--primary));
+  background:var(--primary);color:#fff;font-size:.875rem;font-weight:650;text-decoration:none;box-shadow:none;
+  transition:background .15s,transform .15s;
+}
+.kitfab:hover{background:var(--primary-hover)}
+.kitfab:active{transform:translateY(1px)}
+.kitfab:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.kitfab-ic{
+  width:34px;height:34px;flex-shrink:0;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;background:#f4c11e;color:#1a1300;
+}
+/* A soft pulsing ring draws the eye without a shadow. */
+.kitfab::after{
+  content:"";position:absolute;inset:-6px;border-radius:10px;border:2px solid var(--primary);
+  opacity:0;animation:kitpulse 2.6s ease-out infinite;pointer-events:none;
+}
+@keyframes kitpulse{
+  0%{opacity:.7;transform:scale(.96)}
+  70%,100%{opacity:0;transform:scale(1.12)}
+}
+@media (max-width:480px){
+  .kitfab{height:52px;padding:0 7px}
+  .kitfab-txt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+}
+@media (prefers-reduced-motion: reduce){ .kitfab::after{animation:none} }
+@media print{ .kitfab{display:none !important} }
+
 /* ---- Learning view ---- */
 .learn-intro{margin-bottom:16px}
 .learngrid{

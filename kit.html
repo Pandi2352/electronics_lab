@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Starter Electronics Kit</title>
+<meta name="description" content="The complete starter electronics and IoT kit buy list: every part explained — what it is, where you use it and when you need it.">
+<link rel="icon" href="img/logo.svg" type="image/svg+xml">
+<script>
+  // Apply the saved theme before first paint to avoid a flash.
+  try{ const t = localStorage.getItem('lab-theme'); if(t) document.documentElement.dataset.theme = t; }catch(e){}
+</script>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/kit.css">
+<script src="js/kit.js" defer></script>
+<script src="js/kit-view.js" defer></script>
+</head>
+<body class="kitpage">
+
+<header>
+  <div class="htop">
+    <a class="brand" href="index.html">
+      <div class="brand-badge" aria-hidden="true">
+        <img src="img/logo.svg" alt="" class="brand-logo" width="34" height="34">
+      </div>
+      <div><h1>Starter Electronics Kit</h1><p>Complete buy list · Electronics Beginner Lab</p></div>
+    </a>
+    <a class="btn" href="index.html"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M11 7H3M6 4 3 7l3 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Back<span class="k-long">&nbsp;to the lab</span></a>
+    <button type="button" class="btn icon" id="themebtn" aria-label="Toggle light/dark theme" title="Toggle theme"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <section class="hero k-hero">
+    <p class="k-eyebrow">Complete buy list</p>
+    <h2>Everything for your electronics &amp; IoT lab</h2>
+    <p>A kit that carries you from breadboard circuits → measurements → sensors → Arduino → ESP32 → communication → motors → IoT projects, without repeatedly buying missing small parts. Every part below says what it is, where you use it, and when in your learning you will need it.</p>
+    <div class="k-stats" id="k-stats"></div>
+
+    <div class="k-start">
+      <div>
+        <b>Don’t want to buy 200 things at once?</b>
+        <span>Start with the recommended buy-now list — the actual first purchase.</span>
+      </div>
+      <div class="k-startside">
+        <div class="progress-row">
+          <div class="bar" role="progressbar" aria-label="Buy-now list progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="k-buybar"></i></div>
+          <span id="k-buytxt" class="progtxt"></span>
+        </div>
+        <button type="button" class="btn primary" id="k-startbtn">Open the buy-now list</button>
+      </div>
+    </div>
+
+    <div class="search">
+      <svg class="search-ic" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.75" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <input id="k-search" type="search" placeholder="Search parts: MOSFET, 10k, battery, I2C…" autocomplete="off" spellcheck="false" aria-label="Search parts" aria-describedby="k-status">
+      <kbd class="search-key" aria-hidden="true">/</kbd>
+      <button type="button" id="k-clear" class="search-clear" aria-label="Clear search" hidden><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+    </div>
+    <p id="k-status" class="searchstatus" aria-live="polite"></p>
+
+    <div class="k-filterhead">
+      <span class="flowlabel">When you need it</span>
+      <div class="k-actions">
+        <button type="button" class="btn" id="k-print"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3.5 5V1.5h7V5M3.5 10.5h-2v-5h11v5h-2M3.5 8.5h7v4h-7z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>Print</button>
+        <button type="button" class="btn" id="k-toggle">Expand all</button>
+      </div>
+    </div>
+    <div class="seg k-when" id="k-when" role="group" aria-label="Filter by when you need it"></div>
+  </section>
+
+  <nav class="k-toc" id="k-toc" aria-label="Sections"></nav>
+
+  <div id="k-list"></div>
+
+  <section class="k-pathsec" id="k-pathsec">
+    <h2>Your learning progression</h2>
+    <p>Don’t try to use all of this at once. The kit supports this path, one stage at a time.</p>
+    <div class="k-path" id="k-path"></div>
+    <p class="k-note key k-closing"><b aria-hidden="true">!</b><span id="k-closing"></span></p>
+  </section>
+</main>
+
+<footer>Electronics Beginner Lab · <a href="index.html">Back to the lab</a></footer>
+
+</body>
+</html>
