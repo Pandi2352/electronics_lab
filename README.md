@@ -26,6 +26,7 @@ It is plain HTML, CSS and JavaScript: no build step, no framework, no server and
 
 **Guides page (`guides.html`).** The teal **Guides** button (top of the three stacked buttons) opens a page with an accordion sidebar — one expandable menu per guide, a slim custom scrollbar, a sticky side menu on desktop that highlights the section you are reading, and a slide-in drawer (**Menu** button) on phones and tablets. The address remembers where you are (e.g. `guides.html#uno/shields`).
 
+- **Before Arduino** — the electronics to learn before the Nano: voltage, current, resistance, power and Ohm’s law, circuit basics (series, parallel, dividers, ground, shorts), the main components, the resistor colour code and LED resistor, tools, **using the multimeter**, how a breadboard works, reading schematics, **24 no-code circuits in 5 levels** (first circuits → components → transistors & switching → power & 555 timing → logic ICs & soldering), the first 5 circuits with what to measure, a “ready for the Nano?” checklist, safety and a ₹ buy list. It is the first menu in the sidebar.
 - **Arduino Nano** — the board and its parts, the Nano family, specifications, a pinout diagram, power, setup and troubleshooting (CH340, old bootloader), breadboard wiring, **30 projects in 4 levels** (fundamentals → sensors → small systems → advanced: interrupts, sleep, EEPROM, shift register, stepper, ESP32 bridge), the first 5 projects with circuits and complete sketches, the first-10 sequence, the Nano → IoT path, common mistakes and a ₹ buy list.
 - **Arduino UNO** — the board and the UNO family (R3, clones, R4 Minima / WiFi), specifications, pinout, power (including regulator heat), setup, **shields**, UNO vs Nano, **28 projects in 5 levels** (digital I/O → analog & sound → sensors & displays → motors → advanced systems such as data loggers, RFID, robots and an ESP32 bridge) with links to the matching code lessons, the first-10 sequence, common mistakes, three routes to IoT and a ₹ buy list grouped by level.
 - **ESP32 DevKit** — the board and the ESP32 family (S2, S3, C3, C6, CAM), specifications, pinout with a **safe-pins table** (boot pins, input-only pins, ADC1 vs ADC2), power and brown-outs, setup (board package, BOOT button), **3.3V rules & level shifting**, Wi-Fi / Bluetooth / MQTT / ESP-NOW / OTA explained, **27 projects in 5 levels** (basics → sensors & displays → Wi-Fi & web → IoT protocols → advanced: deep sleep, OTA, FreeRTOS, a Wi-Fi RC car, ESP32 → NestJS → React), the first 5 projects with complete sketches (including a web server and MQTT), the first-10 sequence, common mistakes and a ₹ buy list.
@@ -65,7 +66,7 @@ components/
 ├── index.html          Page layout and the tab views
 ├── kit.html            Starter-kit buy list page
 ├── curriculum.html     51-project curriculum page
-├── guides.html         Guides page with a sidebar (Arduino Nano, Arduino UNO, ESP32 DevKit, Bluetooth Amplifier)
+├── guides.html         Guides page with a sidebar (Before Arduino, Arduino Nano, Arduino UNO, ESP32 DevKit, Bluetooth Amplifier)
 ├── css/
 │   └── styles.css      All styles, theme colours and the mobile layout
 └── js/
@@ -81,6 +82,7 @@ components/
     ├── kit-view.js     kit.html view (standalone — does not load app.js)
     ├── curriculum.js   51-project curriculum (CUR_PHASES, CUR_PROJECTS, CUR_STAGES)
     ├── curriculum-view.js curriculum.html view (standalone)
+    ├── basics.js       Before Arduino guide content (BASICS)
     ├── nano.js         Arduino Nano guide content (NANO)
     ├── uno.js          Arduino UNO guide content (UNO)
     ├── esp32.js        ESP32 DevKit guide content (ESP32)
@@ -165,6 +167,8 @@ Everything is saved in the browser's `localStorage`, on this device only:
 | `lab-curriculum` | Curriculum projects marked built |
 | `lab-cur-measure` | Voltages recorded in curriculum project 4 |
 | `lab-cur-buy` | Items ticked as “have” on the phase buy lists |
+| `lab-basics-guide` | Before Arduino guide projects built |
+| `lab-basics-guide-buy` | Before Arduino buy-list ticks |
 | `lab-nano` | Arduino Nano guide projects built |
 | `lab-nano-buy` | Arduino Nano buy-list ticks |
 | `lab-uno-guide` | Arduino UNO guide projects built |

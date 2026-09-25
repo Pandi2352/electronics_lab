@@ -1,8 +1,8 @@
 /* Guides page (guides.html): an accordion sidebar of guides, one guide shown at a time.
-   Guides: js/nano.js (NANO), js/uno.js (UNO), js/esp32.js (ESP32), js/btamp.js (BTAMP). The address remembers the place: guides.html#uno/shields */
+   Guides: js/basics.js (BASICS), js/nano.js (NANO), js/uno.js (UNO), js/esp32.js (ESP32), js/btamp.js (BTAMP). The address remembers the place: guides.html#uno/shields */
 
 (() => {
-  const GUIDES = [NANO, UNO, ESP32, BTAMP];
+  const GUIDES = [BASICS, NANO, UNO, ESP32, BTAMP];
   const $ = id => document.getElementById(id);
   const load = key => { try{ return JSON.parse(localStorage.getItem(key) || '{}') || {}; }catch(e){ return {}; } };
   const save = (key, v) => { try{ localStorage.setItem(key, JSON.stringify(v)); }catch(e){} };
@@ -11,7 +11,8 @@
   const CHEV = `<svg class="g-chev" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M4 5.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   const BOARD_IC = `<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="4" y="1.5" width="8" height="13" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M2 4.5h2M2 7h2M2 9.5h2M2 12h2M12 4.5h2M12 7h2M12 9.5h2M12 12h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>`;
   const SPEAKER_IC = `<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="9.5" r="2.6" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="4.5" r="0.9" fill="currentColor"/></svg>`;
-  const ICONS = { board:BOARD_IC, speaker:SPEAKER_IC };
+  const BOLT_IC = `<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M9 1.5 3.5 9H8l-1 5.5L12.5 7H8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>`;
+  const ICONS = { board:BOARD_IC, speaker:SPEAKER_IC, bolt:BOLT_IC };
   const NOTE_ICON = { key:'!', tip:'i', warn:'⚠' };
   const flowHTML = steps => `<div class="flow">${steps.map(s => `<span class="flowstep">${esc(s)}</span>`).join(ARROW)}</div>`;
   const pills = items => `<div class="k-chips left">${items.map(i => `<span class="flowstep">${esc(i)}</span>`).join('')}</div>`;

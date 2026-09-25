@@ -166,6 +166,9 @@
 
 @media (prefers-reduced-motion: reduce){ .g-side,.g-backdrop,.g-groupbody,.g-chev{transition:none} }
 
+/* long tags wrap instead of overflowing on phones */
+.g-guide .flowstep{white-space:normal;max-width:100%;overflow-wrap:anywhere}
+
 @media print{
   .g-side,.g-backdrop,.g-menubtn{display:none !important}
   .g-layout{display:block;padding:0}
