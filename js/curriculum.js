@@ -257,3 +257,71 @@ const CUR_STAGES = [
 ];
 
 const CUR_METHOD = ['Build', 'Predict', 'Measure', 'Observe', 'Change one component', 'Measure again', 'Understand why'];
+
+/* Buy list for Phase 1 (projects 1–14). Parts are reused from project to project, so each quantity is the most
+   any one project needs, rounded up to a sensible buying amount.
+   Item: [name, qty, low ₹ per unit, high ₹ per unit, projects that use it, note?]
+   Prices are typical Indian online / retail ranges and will vary by seller and quality. */
+const CUR_BUY = {
+  projects:'1–14',
+  groups:[
+    { title:'Prototyping & power', items:[
+      ['Full-size breadboard (830-point)', 1, 90, 150, '1–14'],
+      ['Breadboard power supply module (MB102)', 1, 60, 100, 'All — the 5V supply'],
+      ['9V 1A DC adapter (for the power module)', 1, 120, 200, 'All', 'A USB phone charger into the module’s USB socket also works.'],
+      ['Male-to-male jumper wires (pack of 40)', 1, 60, 100, '1–7, 9, 13, 14'],
+    ] },
+    { title:'Resistors', items:[
+      ['220Ω resistor', 20, 0.5, 1, '1–3, 5–9, 11–13', 'Project 2 needs 15 at once.'],
+      ['330Ω resistor', 20, 0.5, 1, '1, 2', 'Project 2 needs 15 at once.'],
+      ['10kΩ resistor', 20, 0.5, 1, '3, 4, 6, 7, 9–12', 'The most-used value — spares are handy.'],
+      ['1kΩ resistor', 10, 0.5, 1, '6, 7, 9–13'],
+    ] },
+    { title:'LEDs, buttons & pots', items:[
+      ['Red 5mm LED', 10, 1, 2, '1–3, 5–9, 11–13'],
+      ['Green 5mm LED', 5, 1, 2, '2, 3'],
+      ['Blue 5mm LED', 5, 1.5, 3, '2'],
+      ['6×6mm push button', 10, 1, 3, '3, 7–10', 'Project 3 uses 10.'],
+      ['10kΩ potentiometer', 5, 10, 20, '4, 5, 13, 14'],
+    ] },
+    { title:'Capacitors', items:[
+      ['10µF electrolytic', 5, 1, 2, '6, 13'],
+      ['100µF electrolytic', 5, 2, 4, '6, 7, 13'],
+      ['470µF electrolytic', 3, 4, 8, '6, 7'],
+      ['10nF ceramic (103)', 5, 0.5, 1.5, '14'],
+      ['100nF ceramic (104)', 10, 0.5, 1.5, '14', 'Extra ones are always useful for decoupling ICs.'],
+    ] },
+    { title:'Diodes & transistors', items:[
+      ['1N4007 rectifier diode', 10, 0.5, 1.5, '8, 10'],
+      ['1N4148 signal diode', 10, 0.5, 1.5, '8'],
+      ['1N5819 Schottky diode', 5, 2, 4, '8'],
+      ['BC547 NPN transistor', 5, 1.5, 3, '9, 10'],
+      ['2N2222 NPN transistor', 5, 2, 4, '9–12'],
+    ] },
+    { title:'Sensors, ICs, motor & sound', items:[
+      ['LDR (photoresistor)', 5, 3, 6, '11'],
+      ['10kΩ NTC thermistor', 3, 5, 12, '12'],
+      ['NE555 timer IC', 5, 5, 12, '13, 14'],
+      ['Passive buzzer', 2, 8, 15, '14'],
+      ['Small DC motor (3–6V)', 2, 25, 45, '10'],
+    ] },
+    { title:'Tools', items:[
+      ['Digital multimeter', 1, 300, 800, '1, 4, 6, 8, 12', 'You already own one — ticked by default.'],
+    ] },
+  ],
+  owned:['Digital multimeter'],
+  optional:[
+    ['Second full-size breadboard', 1, 90, 150, 'Keep one circuit built while you start the next.'],
+    ['Pre-cut solid-core jumper wire kit', 1, 100, 200, 'Flat, tidy wiring that is much easier to debug.'],
+    ['Component storage box', 1, 100, 250, 'Stops small parts turning into one mixed pile.'],
+    ['Resistor assortment kit (about 600 pcs, 30 values)', 1, 200, 350, 'Replaces the four resistor lines above and covers every later project.'],
+    ['5mm LED assortment (about 100 pcs, 5 colours)', 1, 100, 180, 'Replaces the three LED lines above with plenty of spares.'],
+  ],
+  tips:[
+    'Prices are estimates — they vary a lot by seller and quality. Check before you order.',
+    'Online stores often add ₹40–80 shipping below a minimum order value, so order everything together.',
+    'Local electronics markets are usually cheapest for resistors, LEDs, capacitors and transistors.',
+    'Buy a few spares of the tiny parts — LEDs and transistors get damaged while learning, and they cost a rupee or two.',
+    'The whole of Phase 1 is plain electronics: you don’t need an Arduino yet.',
+  ],
+};

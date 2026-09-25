@@ -59,7 +59,55 @@
 .c-hint{margin:0 0 8px;font-size:.84rem;color:var(--sub)}
 .c-foot{display:flex;justify-content:flex-end;gap:8px;padding-top:12px;border-top:1px solid var(--line)}
 
+/* ---- Buy list for projects 1–14 ---- */
+.c-buystart{margin-top:14px}
+.c-buy{margin-bottom:22px;border-color:color-mix(in srgb,var(--green) 45%,transparent)}
+.c-buy .ic{background:var(--green);border-color:var(--green);color:#fff;font-weight:700}
+.c-buy .meta .count{font-weight:650;color:var(--ink)}
+.c-buystats b{font-size:1.05rem}
+.c-buytable{width:100%;border-collapse:collapse;font-size:.84rem}
+.c-buytable th,.c-buytable td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.c-buytable thead th{background:var(--inset);font-size:.7rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--sub)}
+.c-buytable .num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.c-buytable td{color:var(--body)}
+.c-buytable td b{color:var(--ink);font-weight:600}
+.c-grouprow th{padding-top:14px;font-size:.78rem;font-weight:650;color:var(--ink);background:transparent}
+.c-have{width:44px;text-align:center !important}
+.c-have input{width:16px;height:16px;margin:2px 0 0;accent-color:var(--green);cursor:pointer}
+.c-rownote{display:block;margin-top:2px;font-size:.76rem;color:var(--sub)}
+.c-buytable tr.owned td{opacity:.45}
+.c-buytable tr.owned td:first-child{opacity:1}
+.c-buytable tr.owned td b{text-decoration:line-through}
+.c-buytable tfoot th,.c-buytable tfoot td{border-bottom:none;border-top:2px solid var(--line3);padding-top:12px;font-size:.9rem;color:var(--ink)}
+.c-buytable tfoot b{font-size:1rem}
+.c-optlist{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.c-optlist li{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:8px 10px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.c-optlist b{display:block;font-size:.86rem;font-weight:600;color:var(--ink)}
+.c-optlist span{font-size:.8rem;color:var(--sub)}
+.c-optlist em{flex-shrink:0;font-style:normal;font-size:.84rem;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+
 @media (max-width:640px){
+  /* Stack each buy-list row as a small card */
+  .c-buy .tablewrap{border:none;overflow:visible}
+  .c-buytable thead{display:none}
+  .c-buytable,.c-buytable tbody,.c-buytable tfoot,.c-buytable tr{display:block}
+  .c-buytable tbody tr:not(.c-grouprow){
+    display:grid;grid-template-columns:32px 1fr auto;gap:2px 8px;padding:10px;margin-bottom:6px;
+    border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);
+  }
+  .c-buytable td,.c-buytable th{border:none;padding:0}
+  .c-buytable .c-have{grid-row:1 / span 4;width:auto}
+  .c-buytable td[data-label="Item"]{grid-column:2 / span 2}
+  .c-buytable td[data-label="Used in"]{grid-column:2 / span 2;font-size:.78rem;color:var(--sub)}
+  .c-buytable td[data-label="Used in"]::before{content:"Projects ";font-weight:600}
+  .c-buytable td[data-label="Qty"]{grid-column:2;grid-row:3;text-align:left;font-size:.8rem;color:var(--ink)}
+  .c-buytable td[data-label="Qty"]::before{content:"Qty "}
+  .c-buytable td[data-label="Price each"]{grid-column:2;grid-row:4;text-align:left;font-size:.78rem;color:var(--sub)}
+  .c-buytable td[data-label="Price each"]::after{content:" each"}
+  .c-buytable td[data-label="Cost"]{grid-column:3;grid-row:3 / span 2;align-self:center;text-align:right}
+  .c-grouprow th{display:block;padding:12px 0 6px}
+  .c-buytable tfoot tr{display:flex;justify-content:space-between;gap:8px;padding-top:10px;border-top:2px solid var(--line3)}
+  .c-buytable tfoot th,.c-buytable tfoot td{border:none;padding:0}
   .c-screen{min-width:0;font-size:.85rem}
   .c-foot .btn{flex:1;height:40px}
 }
@@ -69,5 +117,9 @@
   .c-phase.hidden,.c-proj.hidden{display:block !important}
   .c-proj{break-inside:avoid}
   .c-screen{border-color:#111}
+  .c-buy .c-foot{display:none}
+  body[data-print="buy"] .c-phase,body[data-print="buy"] .k-toc,body[data-print="buy"] .c-progression{display:none !important}
+  body:not([data-print="buy"]) .c-buy{display:none !important}
+  .c-buytable tr.owned td{opacity:1}
   body[data-print="one"] .c-proj:not(.print-target),body[data-print="one"] .stagehead,body[data-print="one"] .c-intro{display:none !important}
 }

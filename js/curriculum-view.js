@@ -98,6 +98,88 @@
     list.appendChild(group);
   });
 
+  /* ---------- buy list for projects 1–14 ---------- */
+  const money = n => '₹' + Math.round(n).toLocaleString('en-IN');
+  const unit = (lo, hi) => lo === hi ? `₹${lo}` : `₹${lo}–${hi}`;
+  const haveState = load('lab-cur-buy');                       // name → true (have it) / false
+  const has = name => name in haveState ? haveState[name] : CUR_BUY.owned.includes(name);
+  const buyItems = CUR_BUY.groups.flatMap(g => g.items);
+
+  const buyEl = document.createElement('div');
+  buyEl.className = 'cat c-buy';
+  buyEl.id = 'buy';
+  buyEl.innerHTML = `
+    <button type="button" class="cathead" aria-expanded="false" aria-controls="buyb">
+      <span class="ic" aria-hidden="true">₹</span>
+      <span class="text"><span class="title">Buy list — projects ${CUR_BUY.projects}</span><span class="note">Everything for Phase 1 in one order, with estimated prices. Tick what you already have and it drops out of the total.</span></span>
+      <span class="meta"><span class="count" id="c-buymeta"></span></span>
+      ${CHEVRON}
+    </button>
+    <div class="catbody" id="buyb"><div><div class="k-body">
+      <div class="k-stats c-buystats" id="c-buystats"></div>
+      <div class="tablewrap"><table class="c-buytable">
+        <thead><tr><th scope="col" class="c-have">Have</th><th scope="col">Item</th><th scope="col" class="num">Qty</th><th scope="col">Used in projects</th><th scope="col" class="num">Price each</th><th scope="col" class="num">Estimated cost</th></tr></thead>
+        ${CUR_BUY.groups.map(g => `<tbody><tr class="c-grouprow"><th colspan="6" scope="colgroup">${esc(g.title)}</th></tr>${g.items.map(([name, qty, lo, hi, used, note]) => `
+          <tr data-item="${esc(name)}">
+            <td class="c-have"><input type="checkbox" data-have="${esc(name)}" aria-label="I already have: ${esc(name)}"></td>
+            <td data-label="Item"><b>${esc(name)}</b>${note ? `<span class="c-rownote">${esc(note)}</span>` : ''}</td>
+            <td data-label="Qty" class="num">${qty}</td>
+            <td data-label="Used in">${esc(used)}</td>
+            <td data-label="Price each" class="num">${unit(lo, hi)}</td>
+            <td data-label="Cost" class="num"><b>${money(qty * lo)}–${money(qty * hi).slice(1)}</b></td>
+          </tr>`).join('')}</tbody>`).join('')}
+        <tfoot><tr><th colspan="5" scope="row">Estimated total (items you still need)</th><td class="num"><b id="c-buytotal"></b></td></tr></tfoot>
+      </table></div>
+      <section class="exsec"><h5>Optional extras</h5>
+        <ul class="c-optlist">${CUR_BUY.optional.map(([name, qty, lo, hi, why]) =>
+          `<li><div><b>${esc(name)}</b><span>${esc(why)}</span></div><em>${unit(lo, hi)}</em></li>`).join('')}</ul>
+      </section>
+      <section class="exsec"><h5>Money-saving tips</h5><ul class="watch plain">${CUR_BUY.tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul></section>
+      <div class="c-foot"><button type="button" class="btn" id="c-buyprint">Print this list</button></div>
+    </div></div></div>`;
+  list.prepend(buyEl);
+  buyEl.querySelector('.cathead').addEventListener('click', () => setOpen(buyEl, !buyEl.classList.contains('open')));
+  buyEl.querySelectorAll('[data-have]').forEach(cb => { cb.checked = has(cb.dataset.have); });
+  buyEl.addEventListener('change', e => {
+    const name = e.target.dataset.have;
+    if(!name) return;
+    haveState[name] = e.target.checked;
+    save('lab-cur-buy', haveState);
+    updateBuy();
+  });
+
+  function updateBuy(){
+    let lo = 0, hi = 0, need = 0, have = 0;
+    buyItems.forEach(([name, qty, l, h]) => {
+      const owned = has(name);
+      buyEl.querySelector(`tr[data-item="${CSS.escape(name)}"]`).classList.toggle('owned', owned);
+      if(owned){ have++; return; }
+      need++;
+      lo += qty * l;
+      hi += qty * h;
+    });
+    const range = `${money(lo)} – ${money(hi)}`;
+    $('c-buytotal').textContent = range;
+    $('c-buymeta').textContent = `≈ ${money(lo)}–${money(hi).slice(1)}`;
+    $('c-buysum').textContent = `${need} items to buy · estimated ${range}`;
+    $('c-buystats').innerHTML = `
+      <div><b>${need}</b><span>items to buy</span></div>
+      <div><b>${range}</b><span>estimated total</span></div>
+      <div><b>${have}</b><span>already have</span></div>`;
+  }
+  updateBuy();
+
+  $('c-buybtn').addEventListener('click', () => {
+    if(!buyEl.classList.contains('open')) setOpen(buyEl, true);
+    buyEl.scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+  $('c-buyprint').addEventListener('click', () => {
+    document.body.dataset.print = 'buy';
+    const done = () => { delete document.body.dataset.print; window.removeEventListener('afterprint', done); };
+    window.addEventListener('afterprint', done);
+    window.print();
+  });
+
   list.addEventListener('input', e => {
     const k = e.target.dataset.measure;
     if(!k) return;
@@ -229,6 +311,8 @@
 
   refresh();
   // Open the first project you haven't built yet.
+  // Before anything is built, start with the buy list open; after that, open the next unbuilt project.
   const next = cards.find(c => !built[c.p.n]);
-  if(next) setOpen(next.el, true);
+  if(!Object.keys(built).length) setOpen(buyEl, true);
+  else if(next) setOpen(next.el, true);
 })();

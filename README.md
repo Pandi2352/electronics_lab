@@ -22,7 +22,7 @@ It is plain HTML, CSS and JavaScript: no build step, no framework, no server and
 
 **Starter kit page (`kit.html`).** The yellow-and-blue **Starter kit** button at the bottom right of every tab opens it in a new tab: the complete buy list in 30 sections (tools, prototyping, resistors, capacitors, semiconductors, ICs, displays, sensors, motors, power, batteries, connectors, safety…). All 271 parts show their quantity, priority, *when* you need them (Day 1 → Later) and what they are used for. It also has the recommended 75-item “buy now” checklist, the learning-progression diagram, search, a “when” filter and printing.
 
-**Project curriculum page (`curriculum.html`).** The violet **51 projects** button, stacked above the Starter kit button, opens the full practical curriculum: 51 projects in 9 phases, from an LED circuit to an ESP32 smart RC car. Each project lists what it teaches, every component with quantities, and its diagrams (build/logic drawings, flow chains and what each display should show). You can mark projects as built, record your predicted and measured voltages for project 4, filter by phase or status, search and print.
+**Project curriculum page (`curriculum.html`).** The violet **51 projects** button, stacked above the Starter kit button, opens the full practical curriculum: 51 projects in 9 phases, from an LED circuit to an ESP32 smart RC car. Each project lists what it teaches, every component with quantities, and its diagrams (build/logic drawings, flow chains and what each display should show). You can mark projects as built, record your predicted and measured voltages for project 4, filter by phase or status, search and print. At the top is a **buy list for projects 1–14**: every Phase 1 component merged into one order, with the projects that use it and an estimated price in ₹ (about ₹640–1,200 in total, plus optional extras and money-saving tips). Tick what you already have and it drops out of the total; the list prints on its own.
 
 Across the whole site:
 
@@ -151,6 +151,7 @@ Everything is saved in the browser's `localStorage`, on this device only:
 | `lab-kit` | Buy-now list items ticked on the starter-kit page |
 | `lab-curriculum` | Curriculum projects marked built |
 | `lab-cur-measure` | Voltages recorded in curriculum project 4 |
+| `lab-cur-buy` | Items ticked as “have” on the projects 1–14 buy list |
 | `lab-theme` | Light/dark choice |
 
 Clearing site data, using a private window, or switching browser or device starts you with empty progress. If storage is blocked, the site still works; it just doesn't save anything.
