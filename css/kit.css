@@ -30,7 +30,7 @@
 .k-startside .progress-row{flex:1;min-width:160px;margin:0}
 .k-startside .bar{min-width:90px}
 .k-filterhead{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:16px}
-.k-actions{display:flex;gap:8px}
+.k-actions{display:flex;flex-wrap:wrap;gap:8px}
 .k-when{position:relative;display:flex;flex-wrap:wrap;margin-top:8px}
 
 /* ---- Table of contents ---- */
@@ -104,6 +104,11 @@
   .k-startside{max-width:none}
   .k-pathsec{padding:16px}
   .kitpage header .btn:not(.icon){padding:0 10px}
+  .k-filterhead{flex-direction:column;align-items:stretch}
+  .k-actions{width:100%}
+  .k-actions .btn{flex:1}
+  .k-actions .seg{width:100%;flex-wrap:wrap}
+  .k-actions .seg button{flex:1 1 auto;justify-content:center}
   .kitpage .k-long,.kitpage .brand p{display:none}
   .kitpage .brand h1{font-size:.98rem}
   .k-startside{flex-wrap:wrap}

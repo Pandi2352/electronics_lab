@@ -263,7 +263,9 @@ const CUR_METHOD = ['Build', 'Predict', 'Measure', 'Observe', 'Change one compon
    Item: [name, qty, low ₹ per unit, high ₹ per unit, projects that use it, note?]
    Prices are typical Indian online / retail ranges and will vary by seller and quality. */
 const CUR_BUY = {
+  phase:1,
   projects:'1–14',
+  intro:'Everything for Phase 1 in one order, with estimated prices. Tick what you already have and it drops out of the total.',
   groups:[
     { title:'Prototyping & power', items:[
       ['Full-size breadboard (830-point)', 1, 90, 150, '1–14'],
@@ -325,3 +327,55 @@ const CUR_BUY = {
     'The whole of Phase 1 is plain electronics: you don’t need an Arduino yet.',
   ],
 };
+
+/* Buy list for Phase 2 (projects 15–24). Most Phase 1 parts are reused, so they are listed separately and
+   pre-ticked; untick any you don't have. */
+const CUR_BUY2 = {
+  phase:2,
+  projects:'15–24',
+  intro:'Only what Phase 2 adds — most parts carry over from Phase 1 and are pre-ticked below. Untick anything you don’t have.',
+  groups:[
+    { title:'Board', items:[
+      ['Arduino UNO', 1, 400, 700, '15–24', 'You already own one — ticked by default. A compatible (CH340) board costs this much; an original costs much more.'],
+      ['USB cable for the UNO (USB-A to USB-B)', 1, 60, 120, '15–24', 'Usually comes with the board — untick if you don’t have one.'],
+    ] },
+    { title:'New for Phase 2', items:[
+      ['Male-to-female jumper wires (pack of 40)', 1, 60, 100, '23, 24', 'Modules such as the LCD backpack and the joystick have male pins.'],
+      ['Yellow 5mm LED', 5, 1, 2, '16', 'The traffic light needs 3.'],
+      ['RGB LED (common cathode)', 3, 5, 10, '21', 'Project 21 uses 2; one spare.'],
+      ['5V active buzzer', 2, 8, 15, '18'],
+      ['SG90 micro servo', 2, 90, 150, '22, 23'],
+      ['Joystick module', 1, 40, 80, '23'],
+      ['16×2 LCD with I2C backpack', 1, 150, 250, '24', 'Buy it with the I2C backpack already soldered on.'],
+      ['5V 2A adapter (external servo supply)', 1, 120, 200, '22, 23', 'Servos can draw more current than the UNO’s 5V pin can supply. A phone charger with a USB breakout also works.'],
+      ['DC barrel jack to screw-terminal adapter', 1, 15, 30, '22, 23', 'Connects the 5V adapter to the breadboard rails.'],
+    ] },
+    { title:'Reuse from Phase 1', items:[
+      ['Full-size breadboard (830-point)', 1, 90, 150, '15–24', 'From the Phase 1 list.'],
+      ['Male-to-male jumper wires (pack of 40)', 1, 60, 100, '15–24', 'From the Phase 1 list.'],
+      ['220Ω resistor', 9, 0.5, 1, '15–21', 'The traffic light uses 9 at once.'],
+      ['10kΩ resistor', 3, 0.5, 1, '16, 17, 20, 21'],
+      ['Red 5mm LED', 3, 1, 2, '15–20'],
+      ['Green 5mm LED', 3, 1, 2, '16'],
+      ['6×6mm push button', 3, 1, 3, '16–18'],
+      ['10kΩ potentiometer', 3, 10, 20, '19, 21, 22, 24', 'Project 21 uses 3.'],
+      ['LDR (photoresistor)', 2, 3, 6, '20'],
+      ['Passive buzzer', 1, 8, 15, '18'],
+    ] },
+  ],
+  owned:['Arduino UNO', 'USB cable for the UNO (USB-A to USB-B)', 'Full-size breadboard (830-point)', 'Male-to-male jumper wires (pack of 40)',
+    '220Ω resistor', '10kΩ resistor', 'Red 5mm LED', 'Green 5mm LED', '6×6mm push button', '10kΩ potentiometer', 'LDR (photoresistor)', 'Passive buzzer'],
+  optional:[
+    ['Extra SG90 servo', 1, 90, 150, 'Servos are easy to strip by forcing the arm — a spare saves waiting for delivery.'],
+    ['0.96″ I2C OLED display', 1, 150, 250, 'Not needed until Phase 3, but it uses the same I2C wiring you learn in project 24.'],
+    ['Arduino Nano', 1, 250, 400, 'A second board lets one project stay built while you start the next.'],
+  ],
+  tips:[
+    'Prices are estimates — they vary a lot by seller and quality. Check before you order.',
+    'Order the Phase 2 parts together with anything missing from Phase 1 to save on shipping.',
+    'For project 24, run the I2C scanner first to find the LCD’s address (usually 0x27 or 0x3F).',
+    'Power the servos from the separate 5V supply and connect its GND to the UNO’s GND.',
+  ],
+};
+
+const CUR_BUYS = [CUR_BUY, CUR_BUY2];

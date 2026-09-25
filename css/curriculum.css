@@ -61,7 +61,12 @@
 
 /* ---- Buy list for projects 1–14 ---- */
 .c-buystart{margin-top:14px}
-.c-buy{margin-bottom:22px;border-color:color-mix(in srgb,var(--green) 45%,transparent)}
+.c-buybtns{display:flex;flex-wrap:wrap;gap:8px}
+.c-buyjump{height:auto;min-height:44px;padding:6px 12px;flex-direction:column;align-items:flex-start;gap:1px;text-align:left}
+.c-buyjump b{font-size:.84rem;font-weight:650}
+.c-buyjump span{font-size:.76rem;color:var(--sub);font-variant-numeric:tabular-nums}
+.c-buyjump:hover{border-color:var(--green)}
+.c-buy{margin-bottom:12px;border-color:color-mix(in srgb,var(--green) 45%,transparent)}
 .c-buy .ic{background:var(--green);border-color:var(--green);color:#fff;font-weight:700}
 .c-buy .meta .count{font-weight:650;color:var(--ink)}
 .c-buystats b{font-size:1.05rem}
@@ -118,7 +123,8 @@
   .c-proj{break-inside:avoid}
   .c-screen{border-color:#111}
   .c-buy .c-foot{display:none}
-  body[data-print="buy"] .c-phase,body[data-print="buy"] .k-toc,body[data-print="buy"] .c-progression{display:none !important}
+  body[data-print="buy"] .c-proj,body[data-print="buy"] .stagehead,body[data-print="buy"] .c-intro,body[data-print="buy"] .k-toc,body[data-print="buy"] .c-progression,body[data-print="buy"] .c-buy:not(.print-target){display:none !important}
+  body[data-print="buy"] .c-phase:not(:has(.print-target)){display:none !important}
   body:not([data-print="buy"]) .c-buy{display:none !important}
   .c-buytable tr.owned td{opacity:1}
   body[data-print="one"] .c-proj:not(.print-target),body[data-print="one"] .stagehead,body[data-print="one"] .c-intro{display:none !important}
