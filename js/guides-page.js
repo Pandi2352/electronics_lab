@@ -1,8 +1,8 @@
 /* Guides page (guides.html): an accordion sidebar of guides, one guide shown at a time.
-   Guides: js/nano.js (NANO), js/uno.js (UNO). The address remembers the place: guides.html#uno/shields */
+   Guides: js/nano.js (NANO), js/uno.js (UNO), js/esp32.js (ESP32). The address remembers the place: guides.html#uno/shields */
 
 (() => {
-  const GUIDES = [NANO, UNO];
+  const GUIDES = [NANO, UNO, ESP32];
   const $ = id => document.getElementById(id);
   const load = key => { try{ return JSON.parse(localStorage.getItem(key) || '{}') || {}; }catch(e){ return {}; } };
   const save = (key, v) => { try{ localStorage.setItem(key, JSON.stringify(v)); }catch(e){} };
