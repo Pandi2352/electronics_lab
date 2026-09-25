@@ -24,7 +24,7 @@ const BOARDS = [
     'The UNO R4 (Minima / WiFi) uses a different 32-bit chip. Most sketches work, but some libraries don’t.',
   ] },
 
-{ id:'nano', name:'Arduino Nano', family:'Arduino', level:'b',
+{ id:'nano', name:'Arduino Nano', family:'Arduino', level:'b', pinout:'nano',
   chip:'ATmega328P, 8-bit, 16MHz', logic:'5V', wireless:'None',
   gpio:'14 digital (6 PWM) + 8 analog', adc:'8 × 10-bit (A6, A7 are analog-only)',
   memory:'32KB flash · 2KB RAM · 1KB EEPROM', power:'USB 5V, or 7–12V on VIN', usb:'Mini-USB or USB-C (clones)',

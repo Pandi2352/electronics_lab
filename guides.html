@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guides</title>
+<meta name="description" content="Complete Arduino Nano and Arduino UNO guides: the boards, pinouts, power, setup, projects from basic to advanced with code, and buy lists in rupees.">
+<link rel="icon" href="img/logo.svg" type="image/svg+xml">
+<script>
+  // Apply the saved theme before first paint to avoid a flash.
+  try{ const t = localStorage.getItem('lab-theme'); if(t) document.documentElement.dataset.theme = t; }catch(e){}
+</script>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/kit.css">
+<link rel="stylesheet" href="css/curriculum.css">
+<link rel="stylesheet" href="css/guides-page.css">
+<script src="js/pinouts.js" defer></script>
+<script src="js/nano.js" defer></script>
+<script src="js/uno.js" defer></script>
+<script src="js/guides-page.js" defer></script>
+</head>
+<body class="kitpage guidepage">
+
+<header>
+  <div class="htop">
+    <button type="button" class="btn g-menubtn" id="g-menubtn" aria-controls="g-side" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4h11M2.5 8h11M2.5 12h11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Menu</button>
+    <a class="brand" href="index.html">
+      <div class="brand-badge" aria-hidden="true">
+        <img src="img/logo.svg" alt="" class="brand-logo" width="34" height="34">
+      </div>
+      <div><h1>Guides</h1><p>Electronics Beginner Lab</p></div>
+    </a>
+    <a class="btn" href="index.html"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M11 7H3M6 4 3 7l3 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Back<span class="k-long">to the lab</span></a>
+    <button type="button" class="btn icon" id="themebtn" aria-label="Toggle light/dark theme" title="Toggle theme"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg></button>
+  </div>
+</header>
+
+<div class="g-layout">
+  <aside class="g-side" id="g-side" aria-label="Guides menu">
+    <div class="g-sidehead">
+      <span>Guides</span>
+      <button type="button" class="btn icon g-close" id="g-close" aria-label="Close menu"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+    </div>
+    <nav id="g-nav" aria-label="Guide sections"></nav>
+    <div class="g-sidefoot">
+      <div class="progress-row">
+        <div class="bar" role="progressbar" aria-label="Nano projects built" aria-valuemin="0" aria-valuemax="100"><i id="g-progress"></i></div>
+      </div>
+      <span class="g-progtxt" id="g-progtxt"></span>
+      <div class="g-quick">
+        <a href="index.html">Back to the lab</a>
+        <a href="kit.html">Starter kit</a>
+        <a href="curriculum.html">51 projects</a>
+      </div>
+    </div>
+  </aside>
+  <div class="g-backdrop" id="g-backdrop" aria-hidden="true"></div>
+
+  <main class="g-main" id="g-content"></main>
+</div>
+
+<footer>Electronics Beginner Lab · <a href="index.html">Back to the lab</a> · <a href="kit.html">Starter kit</a> · <a href="curriculum.html">51 projects</a></footer>
+
+</body>
+</html>

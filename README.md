@@ -24,6 +24,11 @@ It is plain HTML, CSS and JavaScript: no build step, no framework, no server and
 
 **Project curriculum page (`curriculum.html`).** The violet **51 projects** button, stacked above the Starter kit button, opens the full practical curriculum: 51 projects in 9 phases, from an LED circuit to an ESP32 smart RC car. Each project lists what it teaches, every component with quantities, and its diagrams (build/logic drawings, flow chains and what each display should show). You can mark projects as built, record your predicted and measured voltages for project 4, filter by phase or status, search and print. Each phase with a shopping list starts with a **buy list**: every component for that phase merged into one order, with the projects that use it and an estimated price in ₹, plus optional extras and money-saving tips. Phase 1 (projects 1–14) is about ₹640–1,200; Phase 2 (projects 15–24) adds about ₹600–1,030, with the parts reused from Phase 1 listed separately and pre-ticked. Below the core list, Phase 1 also has **Extra components**, **Tools** and **Advanced — nice to have** sections (assortments, IC sockets, a motor battery pack, stripper and cutter, clip leads, a component tester, soldering kit, logic analyser, mini oscilloscope, bench supply…); tick “Add” on any of them and the total shows core parts + your extras. The must-have tools start ticked. Tick what you already have and it drops out of the total; each list prints on its own.
 
+**Guides page (`guides.html`).** The teal **Guides** button (top of the three stacked buttons) opens a page with an accordion sidebar — one expandable menu per guide, a slim custom scrollbar, a sticky side menu on desktop that highlights the section you are reading, and a slide-in drawer (**Menu** button) on phones and tablets. The address remembers where you are (e.g. `guides.html#uno/shields`).
+
+- **Arduino Nano** — the board and its parts, the Nano family, specifications, a pinout diagram, power, setup and troubleshooting (CH340, old bootloader), breadboard wiring, **30 projects in 4 levels** (fundamentals → sensors → small systems → advanced: interrupts, sleep, EEPROM, shift register, stepper, ESP32 bridge), the first 5 projects with circuits and complete sketches, the first-10 sequence, the Nano → IoT path, common mistakes and a ₹ buy list.
+- **Arduino UNO** — the board and the UNO family (R3, clones, R4 Minima / WiFi), specifications, pinout, power (including regulator heat), setup, **shields**, UNO vs Nano, **28 projects in 5 levels** (digital I/O → analog & sound → sensors & displays → motors → advanced systems such as data loggers, RFID, robots and an ESP32 bridge) with links to the matching code lessons, the first-10 sequence, common mistakes, three routes to IoT and a ₹ buy list grouped by level.
+
 Across the whole site:
 
 - **Light and dark themes.** It follows your system setting; the half-circle button in the header overrides it.
@@ -58,6 +63,7 @@ components/
 ├── index.html          Page layout and the tab views
 ├── kit.html            Starter-kit buy list page
 ├── curriculum.html     51-project curriculum page
+├── guides.html         Guides page with a sidebar (Arduino Nano, Arduino UNO)
 ├── css/
 │   └── styles.css      All styles, theme colours and the mobile layout
 └── js/
@@ -73,6 +79,9 @@ components/
     ├── kit-view.js     kit.html view (standalone — does not load app.js)
     ├── curriculum.js   51-project curriculum (CUR_PHASES, CUR_PROJECTS, CUR_STAGES)
     ├── curriculum-view.js curriculum.html view (standalone)
+    ├── nano.js         Arduino Nano guide content (NANO)
+    ├── uno.js          Arduino UNO guide content (UNO)
+    ├── guides-page.js  guides.html view: sidebar, drawer, sections, buy list (standalone)
     ├── lessons.js      Arduino lessons and their sketches (LESSON_UNITS, LESSONS)
     ├── tools.js        Calculators (TOOLS)
     ├── app.js          Shopping, Components and Exercises views; tabs; theme
@@ -152,6 +161,10 @@ Everything is saved in the browser's `localStorage`, on this device only:
 | `lab-curriculum` | Curriculum projects marked built |
 | `lab-cur-measure` | Voltages recorded in curriculum project 4 |
 | `lab-cur-buy` | Items ticked as “have” on the phase buy lists |
+| `lab-nano` | Arduino Nano guide projects built |
+| `lab-nano-buy` | Arduino Nano buy-list ticks |
+| `lab-uno-guide` | Arduino UNO guide projects built |
+| `lab-uno-guide-buy` | Arduino UNO buy-list ticks |
 | `lab-theme` | Light/dark choice |
 
 Clearing site data, using a private window, or switching browser or device starts you with empty progress. If storage is blocked, the site still works; it just doesn't save anything.

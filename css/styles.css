@@ -581,8 +581,17 @@ mark{background:color-mix(in srgb,var(--yellow) 38%,transparent);color:inherit;b
 .kitfab.curfab:hover{background:color-mix(in srgb,#000 12%,var(--violet))}
 .kitfab.curfab .kitfab-ic{background:#fff;color:#5b21b6}
 .kitfab.curfab::after{border-color:var(--violet);animation-delay:1.3s}
+/* Third button, stacked on top: the guides page (Arduino Nano…). */
+.kitfab.guidefab{
+  bottom:calc(16px + 2 * (48px + 12px) + env(safe-area-inset-bottom,0px));
+  background:#0d9488;border-color:color-mix(in srgb,#fff 30%,#0d9488);
+}
+.kitfab.guidefab:hover{background:#0f766e}
+.kitfab.guidefab .kitfab-ic{background:#fff;color:#0f766e}
+.kitfab.guidefab::after{border-color:#0d9488;animation-delay:.65s}
 @media (max-width:480px){
   .kitfab.curfab{bottom:calc(16px + 52px + 12px + env(safe-area-inset-bottom,0px))}
+  .kitfab.guidefab{bottom:calc(16px + 2 * (52px + 12px) + env(safe-area-inset-bottom,0px))}
 }
 @media (max-width:480px){
   .kitfab{height:52px;padding:0 7px}

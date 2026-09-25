@@ -193,6 +193,20 @@ const PD = (() => {
     return svg(236, bottom + 30, s, 'Raspberry Pi Pico pinout', 90);
   }
 
+  // Classic Arduino Nano (ATmega328P), top view with the USB connector at the top.
+  function nano(){
+    const L = [['D13', 'SCK · LED'], ['3V3', '3.3V out'], ['AREF', ''], ['A0', ''], ['A1', ''], ['A2', ''], ['A3', ''],
+      ['A4', 'SDA'], ['A5', 'SCL'], ['A6', 'analog only', 'in'], ['A7', 'analog only', 'in'], ['5V', '5V'], ['RST', 'reset'], ['GND', ''], ['VIN', '7–12V in']];
+    const R = [['D12', 'MISO'], ['D11', '~ MOSI'], ['D10', '~ SS'], ['D9', '~'], ['D8', ''], ['D7', ''], ['D6', '~'], ['D5', '~'],
+      ['D4', ''], ['D3', '~ INT1'], ['D2', 'INT0'], ['GND', ''], ['RST', 'reset'], ['D0', 'RX'], ['D1', 'TX']];
+    const y0 = 70, pitch = 15, bottom = y0 + 14 * pitch;
+    let s = `<rect class="pd-body" x="140" y="30" width="120" height="${bottom - 30 + 22}" rx="6"/>`;
+    s += `<rect class="pd-tab" x="178" y="14" width="44" height="26" rx="3"/>` + t(200, 31, 'USB', 'pd-xs');
+    s += `<rect class="pd-tab" x="181" y="${y0 + 70}" width="38" height="38" rx="2" transform="rotate(45 200 ${y0 + 89})"/>` + t(200, y0 + 92, '328P', 'pd-xs');
+    s += pinColumn(L, 148, y0, pitch, 'L') + pinColumn(R, 252, y0, pitch, 'R');
+    return svg(206, bottom + 30, s, 'Arduino Nano pinout', 97);
+  }
+
   function uno(){
     const top1 = ['SCL', 'SDA', 'AREF', 'GND', '13', '12', '~11', '~10', '~9', '8'];
     const top2 = ['7', '~6', '~5', '4', '~3', '2', 'TX 1', 'RX 0'];
@@ -270,6 +284,8 @@ const PD = (() => {
       note:'Outputs are not in pin order — follow the labels. Tie CLK INH (13) and RESET (15) to GND to count.' },
     uno:{ title:'Arduino UNO R3', draw:uno,
       note:'Top view, USB on the left. ~ marks PWM pins. A4/A5 double as I2C SDA/SCL, and the same signals are repeated on the SDA/SCL pins by AREF.' },
+    nano:{ title:'Arduino Nano', draw:nano,
+      note:'Classic Nano (ATmega328P), top view with USB at the top. ~ marks PWM pins. A6 and A7 are analog inputs only. D0/D1 are shared with USB — keep them free while uploading.' },
     'esp32-devkit':{ title:'ESP32 DevKit V1', draw:esp32Devkit,
       note:'DOIT DevKit V1, 30-pin, top view with the antenna up. Numbers are the GPIO numbers used in code. Amber = boot (strapping) pins, grey italic = input only. 38-pin boards have a different order.' },
     pico:{ title:'Raspberry Pi Pico', draw:pico,
